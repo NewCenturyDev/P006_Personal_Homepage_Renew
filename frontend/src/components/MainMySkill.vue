@@ -1,0 +1,254 @@
+<template>
+  <div class="mainMySkill">
+    <div class="title">My Skills</div>
+    <div class="myPresentationContainer">
+      <el-card class="skillList"
+        v-for="(skillList, skillListIndex) in skills"
+        :style="{ backgroundColor: skillList.backgroundColor }"
+        :key="skillListIndex">
+        <div class="skillTitle">{{ skillList.typeName }}</div>
+        <div class="skillContainer">
+          <div class="skill"
+            v-for="(skill, skillIndex) in skills[skillListIndex].skillList"
+            :key="skillIndex">
+            <img class="skillImage" :src="require(`../assets/skill/${skill.image}`)" />
+            <div class="skillName">{{ skill.name }}</div>
+          </div>
+        </div>
+      </el-card>
+    </div>
+  </div>
+</template>
+
+<script>
+// @ is an alias to /src
+
+export default {
+  name: 'MainMySkill',
+  data() {
+    return {
+      skills: [
+        {
+          typeName: 'General',
+          backgroundColor: '#EC3843aa',
+          skillList: [
+            {
+              name: 'Linux (Debian)',
+              image: 'debian.png',
+            },
+            {
+              name: 'Linux (Ubuntu)',
+              image: 'ubuntu.png',
+            },
+            {
+              name: 'Bash Shell',
+              image: 'shell.png',
+            },
+            {
+              name: 'Git',
+              image: 'git.png',
+            },
+            {
+              name: 'Gradle',
+              image: 'gradle.jpg',
+            },
+          ],
+        },
+        {
+          typeName: 'Backend',
+          backgroundColor: '#F7A300aa',
+          skillList: [
+            {
+              name: 'Node.js',
+              image: 'nodejs.png',
+            },
+            {
+              name: 'Express',
+              image: 'expressjs.png',
+            },
+            {
+              name: 'Java Spring',
+              image: 'spring.png',
+            },
+            {
+              name: 'Spring Boot',
+              image: 'springboot.png',
+            },
+            {
+              name: 'JUnit',
+              image: 'junit.jpg',
+            },
+            {
+              name: 'MySQL',
+              image: 'mysql.png',
+            },
+          ],
+        },
+        {
+          typeName: 'Infra',
+          backgroundColor: '#8C7C5Baa',
+          skillList: [
+            {
+              name: 'AWS',
+              image: 'aws.png',
+            },
+            {
+              name: 'Docker',
+              image: 'docker.jpg',
+            },
+            {
+              name: 'Kubernetes',
+              image: 'kubernetes.png',
+            },
+            {
+              name: 'Jenkins',
+              image: 'jenkins.png',
+            },
+          ],
+        },
+        {
+          typeName: 'Language',
+          backgroundColor: '#B2D135aa',
+          skillList: [
+            {
+              name: 'C',
+              image: 'c.png',
+            },
+            {
+              name: 'C++',
+              image: 'cpp.jpg',
+            },
+            {
+              name: 'JAVA',
+              image: 'java.png',
+            },
+            {
+              name: 'Python 3',
+              image: 'python.png',
+            },
+            {
+              name: 'JavaScript/TypeScript',
+              image: 'javascript.png',
+            },
+            {
+              name: 'SQL',
+              image: 'sql.png',
+            },
+            {
+              name: 'Arduino',
+              image: 'arduino.jpg',
+            },
+          ],
+        },
+        {
+          typeName: 'Frontend',
+          backgroundColor: '#00BAC9aa',
+          skillList: [
+            {
+              name: 'HTML5',
+              image: 'html5.png',
+            },
+            {
+              name: 'CSS3/SASS/SCSS',
+              image: 'css3.png',
+            },
+            {
+              name: 'JavaScript (ES5/6/7/TS)',
+              image: 'javascript.png',
+            },
+            {
+              name: 'JQuery',
+              image: 'jquery.gif',
+            },
+            {
+              name: 'Vue.js',
+              image: 'vuejs.png',
+            },
+            {
+              name: 'React.js',
+              image: 'reactjs.png',
+            },
+          ],
+        },
+        {
+          typeName: 'Etc.',
+          backgroundColor: '#7C5977aa',
+          skillList: [
+            {
+              name: 'Android Development',
+              image: 'android.png',
+            },
+            {
+              name: 'PhotoShop',
+              image: 'photoshop.jpg',
+            },
+            {
+              name: 'OA (Word, PPT, Excel)',
+              image: 'msoffice.png',
+            },
+          ],
+        },
+      ],
+    };
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.mainMySkill {
+  max-width: 1500px;
+  padding: 50px calc(50% - 600px);
+  background-color: #ffffff;
+  .title {
+    width: 100%;
+    height: 50px;
+    margin-bottom: 50px;
+    font-size: 40px;
+    line-height: 50px;
+    text-align: center;
+  }
+  .myPresentationContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1500px;
+    background-color: #ffffff;
+    .skillList {
+      width: 350px;
+      height: 500px;
+      margin: 0 15px; 
+      margin-bottom: 15px;
+      .skillTitle {
+        color: #ffffff;
+        font-size: 28px;
+        line-height: 35px;
+      }
+      .skillContainer {
+        .skill {
+          width: 310px;
+          height: 60px;
+          .skillImage {
+            float: left;
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            border-radius: 5px;
+            background-color: #ffffff;
+          }
+          .skillName {
+            float: right;
+            width: 220px;
+            height: 60px;
+            margin: 0 15px;
+            font-size: 18px;
+            text-align: left;
+            color: #ffffff;
+            line-height: 60px;
+          }
+        }
+      }
+    }
+  }
+}
+</style>
