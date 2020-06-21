@@ -8,6 +8,7 @@
     <MainProjects/>
     <el-divider></el-divider>
     <MainContact/>
+    <vue-backTop></vue-backTop>
   </div>
 </template>
 

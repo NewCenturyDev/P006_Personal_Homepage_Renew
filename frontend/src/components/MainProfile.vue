@@ -1,5 +1,5 @@
 <template>
-  <div class="mainProfile">
+  <div class="mainProfile" id="profile">
     <div class="myPhotoContainer">
       <img class="myPhoto" width="350px" height="350px" src="@/assets/myPhoto.jpg" />
       <div class="name">윤성민</div>

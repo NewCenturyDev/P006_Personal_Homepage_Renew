@@ -1,5 +1,5 @@
 <template>
-  <div class="mainMySkill">
+  <div class="mainMySkill" id="skill">
     <div class="title">My Skills</div>
     <div class="myPresentationContainer">
       <el-card class="skillList"
@@ -30,7 +30,7 @@ export default {
       skills: [
         {
           typeName: 'General',
-          backgroundColor: '#EC3843aa',
+          backgroundColor: 'rgba(236, 056, 067, 0.7)',
           skillList: [
             {
               name: 'Linux (Debian)',
@@ -56,7 +56,7 @@ export default {
         },
         {
           typeName: 'Backend',
-          backgroundColor: '#F7A300aa',
+          backgroundColor: 'rgba(247, 193, 000, 0.7)',
           skillList: [
             {
               name: 'Node.js',
@@ -86,7 +86,7 @@ export default {
         },
         {
           typeName: 'Infra',
-          backgroundColor: '#8C7C5Baa',
+          backgroundColor: 'rgba(140, 124, 091, 0.7)',
           skillList: [
             {
               name: 'AWS',
@@ -108,7 +108,7 @@ export default {
         },
         {
           typeName: 'Language',
-          backgroundColor: '#B2D135aa',
+          backgroundColor: 'rgba(178, 209, 053, 0.7)',
           skillList: [
             {
               name: 'C',
@@ -142,7 +142,7 @@ export default {
         },
         {
           typeName: 'Frontend',
-          backgroundColor: '#00BAC9aa',
+          backgroundColor: 'rgba(000, 186, 201, 0.7)',
           skillList: [
             {
               name: 'HTML5',
@@ -172,7 +172,7 @@ export default {
         },
         {
           typeName: 'Etc.',
-          backgroundColor: '#7C5977aa',
+          backgroundColor: 'rgba(124, 089, 119, 0.7)',
           skillList: [
             {
               name: 'Android Development',

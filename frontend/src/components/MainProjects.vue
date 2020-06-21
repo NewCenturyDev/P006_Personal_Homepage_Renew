@@ -1,5 +1,5 @@
 <template>
-  <div class="mainProjects">
+  <div class="mainProjects" id="projects">
     <div class="title">My Projects</div>
     <div class="myProjectContainer">
       <el-tabs v-model="activeTab">

@@ -1,5 +1,5 @@
 <template>
-  <div class="mainContact">
+  <div class="mainContact" id="contact">
     <div class="title">Contact</div>
     <div class="contactBtnContainer">
       <el-button class="contactBtn" type="primary" v-on:click="openLink('https://github.com/HyperTech99')">
