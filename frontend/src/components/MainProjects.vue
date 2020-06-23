@@ -14,12 +14,12 @@
               <el-card v-if="projectList.projects.length !== 0" shadow="hover" body-style="{ width: calc(100% - 50px); padding: 0; }">
                 <div class="projectList">
                   <div class="projectImageContainer">
-                    <img class="projectImage" :src="`../assets/projects/${project.image}`" />
+                    <img class="projectImage" :src="`../assets/projects/${project.screenshot[0]}`" />
                     <div class="projectBtnContainer">
                       <el-button class="projectBtn" type="plane" v-on:click="openGithub(project.link)">
                         Github 열기
                       </el-button>
-                      <el-button class="projectBtn" type="plane" v-on:click="gotoDetail(projectIndex)">
+                      <el-button class="projectBtn" type="plane" v-on:click="gotoDetail(project)">
                         자세히 보기
                       </el-button>
                     </div>
@@ -60,50 +60,57 @@ export default {
           typeName: 'Web',
           projects: [
             {
+              id: 1,
               name: 'SCP Schools',
-              image: null,
+              screenshot: [],
               discription: 'TCP School을 모방하여 만든 웹 페이지로써, 세종대학교 컴퓨터공학과 1학년 과정에서 배우는 내용들을 정리한 웹 페이지입니다.<br/>이 프로젝트를 진행하면서 HTML, CSS, Javascript에 익숙해졌습니다.',
               stack: ['HTML5', 'CSS3', 'Javascript', 'JQuery'],
             },
             {
+              id: 2,
               name: 'My Journal Express',
-              image: null,
+              screenshot: [],
               discription: '동아리에서 3인 프로젝트 (기획/디자인/개발 중 제가 개발을 담당하였습니다.) 로 진행한 자신만의 저널을 만들 수 있는 웹 서비스로써, 이미지나 동영상, 텍스트를 화면상에 자유롭게 배치가 가능한 것이 특징입니다.<br/>이 프로젝트를 진행하며 REST API 및 Ajax 기술에 대해 상당 부분 이해할 수 있었습니다.',
               stack: ['HTML5', 'CSS3', 'Javascript', 'JQuery', 'Node.js', 'EJS', 'Express.js', 'MySQL', 'Docker'],
             },
             {
+              id: 3,
               name: 'DK-Zone',
-              image: null,
+              screenshot: [],
               discription: '페이스북 형태의 SNS 웹 서비스로써, 처음으로 SPA 프레임워크와 UI 프레임워크를 사용하여 만들어 본 프로젝트입니다.<br/>이 프로젝트를 진행하면서, SPA Framework, Client-Side Rendering, Templete, View Component, SPA-router, 반응형 레이아웃 기술 및 기법에 대해 상당 부분 이해할 수 있었습니다.',
               stack: ['HTML5', 'CSS3', 'Javascript', 'Vue.js', 'Node.js', 'Express.js', 'MySQL', 'Docker'],
             },
             {
+              id: 4,
               name: `HyperTech99's Portpolio`,
-              image: null,
+              screenshot: [],
               discription: '제 예전 포트폴리오 웹 페이지입니다.<br/>이 프로젝트를 진행하면서, Vue.js보다 좀 더 대중적인 React.js를 사용할 줄 알게 되었습니다. 포트폴리오이기에, 정적인 내용만을 보여준다고 생각하여 백엔드는 구현하지 않고 하드코딩을 통해 구현했었습니다.',
               stack: ['HTML5', 'CSS3', 'Javascript', 'React.js'],
             },
             {
+              id: 5,
               name: `Sejong HackerTon`,
-              image: null,
+              screenshot: [],
               discription: '세종대학교 해커톤에서 4인 프로젝트로 진행한 AI 시각화 웹 페이지입니다.<br/>이 프로젝트를 진행하면서, Vue.js, Node.js, Express, MySQL에 완벽하게 숙달될 수 있었습니다. 덤으로, 서버 간 통신[임베디드 장치(Arduino) <-> AI Server(Python) <-> Web Backend(Node.js Express) <-> Web Frontend(Vue.js)]을 구현해 볼 수 있는 좋은 기회였습니다.',
               stack: ['HTML5', 'CSS3', 'Javascript', 'Vue.js', 'Node.js', 'Express', 'MySQL'],
             },
             {
+              id: 6,
               name: `HyperTech99's Page (The New Portpolio)`,
-              image: null,
+              screenshot: [],
               discription: '제 현재 포트폴리오 웹 페이지입니다.<br/>하드코딩 특성상 내용 변경 및 유지보수에 불편함을 겪어 이 프로젝트를 진행하게 되었습니다. 이 프로젝트를 진행하면서, Spring Framework를 사용하여 API 백엔드를 구현하여 조금 더 편하게 포트폴리오를 관리할 수 있게 되었습니다.',
               stack: ['HTML5', 'CSS3', 'Javascript', 'Vue.js', 'JAVA Spring', 'Mybatis', 'MySQL', 'Docker'],
             },
             {
+              id: 7,
               name: `HyperTech99's Archive`,
-              image: null,
+              screenshot: [],
               discription: 'DevoThink라는 프로그램의 기능에 영감을 받아 만든 온라인 아카이빙 웹 서비스입니다.<br/>이 프로젝트를 진행하면서, Spring Framework에 익숙해지고, JSP, Mybatis를 사용하는 방법을 깨닫게 되었습니다. Node.js를 이용한 단순한 API 서버 대신, Server-Side에서 MVC 모두를 다루어 보는 경험을 할 수 있었습니다. 조금 고전적인 기술이기는 하지만, Server Side Rendering과 Client Side Rendering의 장단점을 파악할 수 있는 기회가 되었습니다.',
               stack: ['HTML5', 'CSS3', 'JSP', 'Server-Side Rendering', 'JAVA Spring', 'Mybatis', 'MySQL', 'Docker', 'Jenkins'],
             },
             // {
             //   name: `HyperTech99's Storage`,
-            //   image: null,
+            //   screenshot: [],
             //   discription: '서버의 파일들을 관리할 수 있는 웹 파일 탐색기 프로젝트입니다.<br/>이 프로젝트를 진행하면서, Spring Framework 및 Vue.js Framework에 매우 숙달될 수 있었습니다.',
             //   stack: ['HTML5', 'CSS3', 'Javascript', 'Vue.js', 'JAVA Spring', 'Spring Boot', 'Mybatis', 'MySQL', 'Docker', 'Jenkins'],
             // },
@@ -113,26 +120,30 @@ export default {
           typeName: 'Android',
           projects: [
             {
+              id: 9,
               name: 'JH-High App',
-              image: null,
+              screenshot: [],
               discription: '',
               stack: ['Android', 'Native Android App'],
             },
             {
+              id: 10,
               name: 'My Journal Express Mobile',
-              image: null,
+              screenshot: [],
               discription: '',
               stack: ['Android', 'Web App Sync'],
             },
             {
+              id: 11,
               name: 'DK-Zone Mobile',
-              image: null,
+              screenshot: [],
               discription: '',
               stack: ['Android', 'Web App Sync'],
             },
             {
+              id: 12,
               name: 'Vega Conflict Central',
-              image: null,
+              screenshot: [],
               discription: '',
               stack: ['Android', 'Native Android App'],
             },
@@ -142,20 +153,23 @@ export default {
           typeName: 'Etc.',
           projects: [
             {
+              id: 13,
               name: 'Jjapke-Mon',
-              image: null,
+              screenshot: [],
               discription: '',
               stack: ['C++', 'Console Application', 'Game'],
             },
             {
+              id: 14,
               name: 'Jjaplu-Marble',
-              image: null,
+              screenshot: [],
               discription: '',
               stack: ['JAVA', 'GUI Application', 'Swing', 'AWT', 'Game'],
             },
             {
+              id: 15,
               name: 'OSS-MineSweeper',
-              image: null,
+              screenshot: [],
               discription: '',
               stack: ['C', 'Console Application', 'Git', 'TeamWork', 'Cleancode', 'Refactoring'],
             },
@@ -169,10 +183,11 @@ export default {
     openGithub(link) {
       window.open(link);
     },
-    gotoDetail(index) {
+    gotoDetail(project) {
       this.$router.push({
-        name: 'project',
-        params: { index },
+        name: 'Project',
+        params: { project },
+        query: { id: project.id },
       });
     },
   }

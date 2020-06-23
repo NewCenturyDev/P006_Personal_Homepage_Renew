@@ -6,7 +6,7 @@
       <div class="headerBtn" v-scroll-to="'#projects'">Projects</div>
       <div class="headerBtn" v-scroll-to="'#contact'">Contact</div>
       <div>
-        <el-button class="loginBtn" type="primary" disable v-on:click="login">
+        <el-button class="loginBtn" type="primary" disable v-on:click="gotoLogin">
           Login
         </el-button>
       </div>
@@ -43,8 +43,9 @@ export default {
     }
   },
   methods: {
-    login() {
+    gotoLogin() {
       alert('관리 페이지 및 백엔드는 아직 안만들었쪄염 뿌우~');
+      this.$router.push('/login');
     }
   }
 }
