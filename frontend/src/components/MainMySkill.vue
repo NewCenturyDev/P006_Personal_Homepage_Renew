@@ -3,13 +3,13 @@
     <div class="title">My Skills</div>
     <div class="myPresentationContainer">
       <el-card class="skillList"
-        v-for="(skillList, skillListIndex) in skills"
-        :style="{ backgroundColor: skillList.backgroundColor }"
-        :key="skillListIndex">
-        <div class="skillTitle">{{ skillList.typeName }}</div>
+        v-for="(skillCategory, skillCategoryIndex) in $store.state.skillCategory"
+        :style="{ backgroundColor: getBackgroundColor(skillCategoryIndex) }"
+        :key="skillCategoryIndex">
+        <div class="skillTitle">{{ skillCategory }}</div>
         <div class="skillContainer">
           <div class="skill"
-            v-for="(skill, skillIndex) in skills[skillListIndex].skillList"
+            v-for="(skill, skillIndex) in $store.getters.getSkillByCategory(skillCategory)"
             :key="skillIndex">
             <img class="skillImage" :src="require(`../assets/skill/${skill.image}`)" />
             <div class="skillName">{{ skill.name }}</div>
@@ -25,172 +25,12 @@
 
 export default {
   name: 'MainMySkill',
-  data() {
-    return {
-      skills: [
-        {
-          typeName: 'General',
-          backgroundColor: 'rgba(236, 056, 067, 0.7)',
-          skillList: [
-            {
-              name: 'Linux (Debian)',
-              image: 'debian.png',
-            },
-            {
-              name: 'Linux (Ubuntu)',
-              image: 'ubuntu.png',
-            },
-            {
-              name: 'Bash Shell',
-              image: 'shell.png',
-            },
-            {
-              name: 'Git',
-              image: 'git.png',
-            },
-            {
-              name: 'Gradle',
-              image: 'gradle.jpg',
-            },
-          ],
-        },
-        {
-          typeName: 'Backend',
-          backgroundColor: 'rgba(247, 193, 000, 0.7)',
-          skillList: [
-            {
-              name: 'Node.js',
-              image: 'nodejs.png',
-            },
-            {
-              name: 'Express',
-              image: 'expressjs.png',
-            },
-            {
-              name: 'Java Spring',
-              image: 'spring.png',
-            },
-            {
-              name: 'Spring Boot',
-              image: 'springboot.png',
-            },
-            {
-              name: 'JUnit',
-              image: 'junit.jpg',
-            },
-            {
-              name: 'MySQL',
-              image: 'mysql.png',
-            },
-          ],
-        },
-        {
-          typeName: 'Infra',
-          backgroundColor: 'rgba(140, 124, 091, 0.7)',
-          skillList: [
-            {
-              name: 'AWS',
-              image: 'aws.png',
-            },
-            {
-              name: 'Docker',
-              image: 'docker.jpg',
-            },
-            {
-              name: 'Kubernetes',
-              image: 'kubernetes.png',
-            },
-            {
-              name: 'Jenkins',
-              image: 'jenkins.png',
-            },
-          ],
-        },
-        {
-          typeName: 'Language',
-          backgroundColor: 'rgba(178, 209, 053, 0.7)',
-          skillList: [
-            {
-              name: 'C',
-              image: 'c.png',
-            },
-            {
-              name: 'C++',
-              image: 'cpp.jpg',
-            },
-            {
-              name: 'JAVA',
-              image: 'java.png',
-            },
-            {
-              name: 'Python 3',
-              image: 'python.png',
-            },
-            {
-              name: 'JavaScript/TypeScript',
-              image: 'javascript.png',
-            },
-            {
-              name: 'SQL',
-              image: 'sql.png',
-            },
-            {
-              name: 'Arduino',
-              image: 'arduino.jpg',
-            },
-          ],
-        },
-        {
-          typeName: 'Frontend',
-          backgroundColor: 'rgba(000, 186, 201, 0.7)',
-          skillList: [
-            {
-              name: 'HTML5',
-              image: 'html5.png',
-            },
-            {
-              name: 'CSS3/SASS/SCSS',
-              image: 'css3.png',
-            },
-            {
-              name: 'JavaScript (ES5/6/7/TS)',
-              image: 'javascript.png',
-            },
-            {
-              name: 'JQuery',
-              image: 'jquery.gif',
-            },
-            {
-              name: 'Vue.js',
-              image: 'vuejs.png',
-            },
-            {
-              name: 'React.js',
-              image: 'reactjs.png',
-            },
-          ],
-        },
-        {
-          typeName: 'Etc.',
-          backgroundColor: 'rgba(124, 089, 119, 0.7)',
-          skillList: [
-            {
-              name: 'Android Development',
-              image: 'android.png',
-            },
-            {
-              name: 'PhotoShop',
-              image: 'photoshop.jpg',
-            },
-            {
-              name: 'OA (Word, PPT, Excel)',
-              image: 'msoffice.png',
-            },
-          ],
-        },
-      ],
-    };
-  }
+  methods: {
+    getBackgroundColor(index) {
+      const colorList = ['rgba(236, 056, 067, 0.7)', 'rgba(247, 193, 000, 0.7)', 'rgba(140, 124, 091, 0.7)', 'rgba(178, 209, 053, 0.7)', 'rgba(000, 186, 201, 0.7)', 'rgba(124, 089, 119, 0.7)', ];
+      return colorList[index % 6];
+    }
+  },
 }
 </script>
 

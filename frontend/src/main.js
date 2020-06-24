@@ -8,6 +8,7 @@ import store from './store';
 import './plugins/elementUI';
 import './plugins/vueScroll';
 import './plugins/Backtop';
+import './plugins/markdownEditor';
 
 Vue.config.productionTip = false;
 

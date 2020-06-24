@@ -9,6 +9,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@kangc/v-md-editor": "^1.4.1",
     "babel-polyfill": "^6.26.0",
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
@@ -16,6 +17,7 @@
     "vue-backtop-pack": "^0.2.0",
     "vue-router": "^3.2.0",
     "vue-scrollto": "^2.18.1",
+    "vue-simple-markdown": "^1.1.4",
     "vuex": "^3.4.0"
   },
   "devDependencies": {

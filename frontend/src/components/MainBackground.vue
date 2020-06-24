@@ -1,12 +1,16 @@
 <template>
   <div class="mainBackground" :style="{ height: `${imageHeight}px` }">
+    <LoginModal :dialogVisible="dialogVisible" />
     <div class="header" v-if="dynamicStyle === 'greetingsContainer'">
       <div class="headerBtn" v-scroll-to="'#profile'">Profile</div>
       <div class="headerBtn" v-scroll-to="'#skill'">Skill</div>
       <div class="headerBtn" v-scroll-to="'#projects'">Projects</div>
       <div class="headerBtn" v-scroll-to="'#contact'">Contact</div>
       <div>
-        <el-button class="loginBtn" type="primary" disable v-on:click="gotoLogin">
+        <el-button v-if="sessionCheck === true" class="loginBtn" type="primary" disable v-on:click="gotoAdmin">
+          Admin
+        </el-button>
+        <el-button v-else class="loginBtn" type="primary" disable v-on:click="gotoLogin">
           Login
         </el-button>
       </div>
@@ -21,11 +25,17 @@
 
 <script>
 // @ is an alias to /src
+import LoginModal from '@/components/LoginModal.vue';
 
 export default {
   name: 'MainBackground',
+  components: {
+    LoginModal,
+  },
   data() {
     return {
+      dialogVisible: false,
+      sessionCheck: true,
       dynamicStyle: window.innerWidth >= 500 ? 'greetingsContainer' : 'mobile-greetingsContainer',
       imageHeight: window.innerHeight,
     };
@@ -44,9 +54,11 @@ export default {
   },
   methods: {
     gotoLogin() {
-      alert('관리 페이지 및 백엔드는 아직 안만들었쪄염 뿌우~');
-      this.$router.push('/login');
-    }
+      this.dialogVisible = true;
+    },
+    gotoAdmin() {
+      this.$router.push('/admin');
+    },
   }
 }
 </script>
