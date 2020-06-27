@@ -22,6 +22,24 @@ export default {
       },
     };
   },
+  async beforeMount() {
+    const sessionIsValid = await this.$store.dispatch('checkSession');
+    if (sessionIsValid === true) {
+      this.$router.push('/admin');
+    }
+  },
+  methods: {
+    async login() {
+      try {
+        await this.$store.dispatch('login', this.input);
+        this.$parent.dialogVisible = false;
+        this.$router.push('/admin');
+      } catch (error) {
+        alert(error);
+        this.$parent.dialogVisible = false;
+      }
+    }
+  }
 }
 </script>
 
