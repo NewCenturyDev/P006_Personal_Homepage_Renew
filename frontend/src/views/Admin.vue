@@ -12,7 +12,7 @@
         placeholder="코드네임"
         v-model="newCodename">
       </el-input>
-      <el-button class="confirmBtn" v-on:click="setCodeName" size="small" type="primary">설정</el-button>
+      <el-button class="confirmBtn" v-on:click="setCodename" size="small" type="primary">설정</el-button>
       <div class="settingOption">자기소개 문구 설정 (HTML 지원)</div>
       <el-input
         type="textarea"
@@ -21,6 +21,48 @@
         v-model="newPresentation">
       </el-input>
       <el-button class="confirmBtn" v-on:click="setPresentation" size="small" type="primary">설정</el-button>
+      <div class="settingOption">활동 이력 관리</div>
+      <el-table
+        ref="activityTable"
+        :data="$store.state.activities">
+        <el-table-column
+          property="id"
+          label="ID"
+          width="60">
+        </el-table-column>
+        <el-table-column
+          property="content"
+          label="Content">
+        </el-table-column>
+        <el-table-column
+          property="timestamp"
+          label="Timestamp"
+          width="120">
+        </el-table-column>
+        <el-table-column width="160" label="Operation">
+          <template slot-scope="activityScope">
+            <el-button class="editBtn" size="mini" type="primary" v-on:click="selectActivity($store.state.activities[activityScope.$index].id)">수정</el-button>
+            <el-popconfirm class="deleteBtn"
+              title="정말 활동이력을 삭제하시겠습니까?"
+              confirmButtonText='삭제'
+              cancelButtonText='취소'
+              v-on:onConfirm="deleteActivity($store.state.activities[activityScope.$index].id)">
+              <el-button size="mini" type="danger" slot="reference">삭제</el-button>
+            </el-popconfirm>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-button class="confirmBtn" size="small" type="success" v-on:click="activityFormOpen = true">추가</el-button>
+      <el-dialog class="activityForm"
+        :close-on-click-modal="false"
+        v-on:close="clearNewActivityInput"
+        :visible.sync="activityFormOpen">
+        <el-input class="activityContent" placeholder="활동 내용" v-model="newActivity.content"></el-input>
+        <el-input class="activityTimestamp" placeholder="활동 일자 (YYYY. MM. DD 형식 권장)" v-model="newActivity.timestamp"></el-input>
+        <el-button v-on:click="createActivity" v-if="newActivity.id === null" type="primary">설정</el-button>
+        <el-button v-on:click="modifyActivity" v-else type="primary">수정</el-button>
+        <el-button v-on:click="clearNewActivityInput">취소</el-button>
+      </el-dialog>
     </el-card>
     <el-card class="settingContainer">
       <el-header class="settingTitle">Skills</el-header>
@@ -54,7 +96,6 @@
         ref="skillTable"
         :data="$store.state.skills">
         <el-table-column
-          type=index
           property="id"
           label="ID"
           width="60">
@@ -133,7 +174,6 @@
         ref="projectTable"
         :data="$store.state.projects">
         <el-table-column
-          type=index
           property="id"
           label="ID"
           width="60">
@@ -228,6 +268,12 @@ export default {
       newCodename: this.$store.state.codename,
       newPresentation: this.$store.state.presentation,
       newProfilePhoto: null,
+      activityFormOpen: false,
+      newActivity: {
+        id: null,
+        content: '',
+        timestamp: '',
+      },
       skillFormOpen: false,
       skillCategoryFormOpen: false,
       newSkillCategory: '',
@@ -262,9 +308,9 @@ export default {
     goHome() {
       this.$router.push('/');
     },
-    async setCodeName() {
+    async setCodename() {
       try {
-        await this.$store.dispatch('setCodeName', this.newCodeName);
+        await this.$store.dispatch('setCodename', this.newCodename);
       } catch (error) {
         alert(error);
       }
@@ -285,6 +331,35 @@ export default {
       } catch (error) {
         alert(error);
       }
+    },
+    selectActivity(activityIndex) {
+      this.newActivity = this.$store.state.activities[activityIndex];
+      this.activityFormOpen = true;
+    },
+    async createActivity() {
+      try {
+        await this.$store.dispatch('createActivity', this.newActivity);
+      } catch (error) {
+        alert(error);
+      }
+    },
+    async modifyActivity() {
+      try {
+        await this.$store.dispatch('modifyActivity', this.newActivity);
+      } catch (error) {
+        alert(error);
+      }
+    },
+    async deleteActivity(activityID) {
+      try {
+        await this.$store.dispatch('deleteActivity', activityID);
+      } catch (error) {
+        alert(error);
+      }
+    },
+    clearNewActivityInput() {
+      this.newActivity = '';
+      this.activityFormOpen = false;
     },
     selectSkillCategory(category) {
       this.newSkillCategory = category;
@@ -477,6 +552,10 @@ export default {
       width: 117.5px;
       margin: 5px;
     }
+    .tag {
+      margin: 5px;
+      font-size: 8px;
+    }
     .categoryContainer {
       display: flex;
       flex-direction: row;
@@ -490,6 +569,26 @@ export default {
           line-height: 20px;
         }
       }
+    }
+  }
+  .activityForm {
+    max-width: 600px;
+    margin: 150px auto;
+    .activityContent {
+      width: calc(100% - 30px);
+      margin: 15px;
+    }
+    .activityTimestamp {
+      width: calc(100% - 30px);
+      margin: 15px;
+    }
+  }
+  .categoryForm {
+    max-width: 500px;
+    margin: 150px auto;
+    .categoryName {
+      width: calc(100% - 30px);
+      margin: 25px 15px;
     }
   }
   .skillForm {
@@ -552,18 +651,6 @@ export default {
       width: calc(100% - 30px);
       min-height: 40px;
       margin: 5px 15px;
-    }
-  }
-  .tag {
-    margin: 5px;
-    font-size: 8px;
-  }
-  .categoryForm {
-    max-width: 500px;
-    margin: 150px auto;
-    .categoryName {
-      width: calc(100% - 30px);
-      margin: 25px 15px;
     }
   }
   .footer {

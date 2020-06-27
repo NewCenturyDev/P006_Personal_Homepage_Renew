@@ -1,6 +1,6 @@
 export default {
-  setCodeName (state, codeName) {
-    state.codeName = codeName;
+  setCodename (state, codename) {
+    state.codename = codename;
   },
   setPresentation (state, presentation) {
     state.presentation = presentation;
