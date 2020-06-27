@@ -1,5 +1,11 @@
+import Auth from './Auth';
+import Profile from './Profile';
+import Skill from './Skill';
+import Project from './Project';
+
 export default {
-  checkSession (context) {
-    context.commit('increment')
-  }
+  ...Auth,
+  ...Profile,
+  ...Skill,
+  ...Project,
 };
