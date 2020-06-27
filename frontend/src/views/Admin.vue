@@ -299,8 +299,10 @@ export default {
     };
   },
   async beforeMount() {
-    const sessionIsValid = await this.$store.dispatch('checkSession');
-    if (sessionIsValid === false) {
+    try {
+      await this.$store.dispatch('checkSession');
+    } catch (error) {
+      alert(error);
       this.$router.push('/');
     }
   },

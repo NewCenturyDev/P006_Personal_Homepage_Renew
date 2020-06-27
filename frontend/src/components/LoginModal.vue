@@ -23,9 +23,12 @@ export default {
     };
   },
   async beforeMount() {
-    const sessionIsValid = await this.$store.dispatch('checkSession');
-    if (sessionIsValid === true) {
+    try {
+      await this.$store.dispatch('checkSession');
+      this.$parent.dialogVisible = false;
       this.$router.push('/admin');
+    } catch (error) {
+      alert(error);
     }
   },
   methods: {

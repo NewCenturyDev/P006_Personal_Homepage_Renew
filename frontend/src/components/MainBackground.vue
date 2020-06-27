@@ -35,12 +35,23 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      sessionCheck: true,
+      sessionCheck: false,
       dynamicStyle: window.innerWidth >= 500 ? 'greetingsContainer' : 'mobile-greetingsContainer',
       imageHeight: window.innerHeight,
     };
   },
-  beforeMount() {
+  async beforeMount() {
+    try {
+      await this.$store.dispatch('checkSession');
+      this.sessionCheck = true;
+    } catch (error) {
+      if (error === '로그인 해주세요') {
+        this.sessionCheck = false;
+      } else {
+        this.sessionCheck = false;
+        alert(error);
+      }
+    }
     if (window.innerWidth >= 500) {
       window.addEventListener('resize', () => {
         this.imageHeight = window.innerHeight;
