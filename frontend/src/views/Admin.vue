@@ -3,7 +3,10 @@
     <el-page-header class="header" @back="goHome" title="Home" content="포트폴리오 관리"></el-page-header>
     <el-divider class="headerDivider"></el-divider>
     <el-card class="settingContainer">
-      <el-header class="settingTitle">Profile</el-header>
+      <el-header class="settingTitle">
+        Profile
+        <el-button class="logoutBtn" v-on:click="logout">로그아웃</el-button>
+      </el-header>
       <div class="settingOption">개인사진 설정</div>
       <input type="file" ref="profilePhoto" v-on:change="selectProfilePhoto()"/>
       <el-button class="confirmBtn" v-on:click="setProfilePhoto()" size="small" type="primary">업로드</el-button>
@@ -300,15 +303,21 @@ export default {
   },
   async beforeMount() {
     try {
-      await this.$store.dispatch('checkSession');
+      const isLoggedIn = await this.$store.dispatch('checkSession');
+      if (isLoggedIn === false) {
+        this.$router.push('/');
+      }
     } catch (error) {
       alert(error);
-      this.$router.push('/');
     }
   },
   methods: {
     goHome() {
       this.$router.push('/');
+    },
+    async logout() {
+      await this.$store.dispatch('logout');
+      this.goHome();
     },
     async setCodename() {
       try {
@@ -543,6 +552,10 @@ export default {
       font-size: 16px;
       font-weight: bold;
       text-align: left;
+    }
+    .logoutBtn {
+      float: right;
+      margin: 10px;
     }
     .confirmBtn {
       margin: 10px;

@@ -27,4 +27,5 @@ frontend/*.sw?
 
 # Python Cache & Virtual Environments
 backend/__pycache__
+backend/src/__pycache__
 backend/env

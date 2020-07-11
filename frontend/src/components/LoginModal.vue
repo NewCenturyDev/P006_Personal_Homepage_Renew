@@ -2,9 +2,9 @@
   <div class="loginModal">
     <el-dialog class="loginForm" :visible.sync="$parent.dialogVisible">
       <el-header class="loginTitle">포트폴리오 관리</el-header>
-      <el-input class="loginInput" placeholder="ID" v-model="input.id"></el-input>
-      <el-input class="loginInput" placeholder="PW" v-model="input.pw" show-password></el-input>
-      <el-button class="loginBtn" type="primary">Login</el-button>
+      <el-input class="loginInput" placeholder="ID" v-model="input.username"></el-input>
+      <el-input class="loginInput" v-on:keyup.enter="login" placeholder="PW" v-model="input.password" show-password></el-input>
+      <el-button class="loginBtn" v-on:click="login" type="primary">Login</el-button>
     </el-dialog>
   </div>
 </template>
@@ -17,16 +17,17 @@ export default {
   data() {
     return {
       input: {
-        id: '',
-        pw: '',
+        username: '',
+        password: '',
       },
     };
   },
   async beforeMount() {
     try {
-      await this.$store.dispatch('checkSession');
-      this.$parent.dialogVisible = false;
-      this.$router.push('/admin');
+      const isLoggedIn = await this.$store.dispatch('checkSession');
+      if (isLoggedIn === true) {
+        this.$parent.dialogVisible = false;
+      }
     } catch (error) {
       alert(error);
     }
@@ -40,6 +41,11 @@ export default {
       } catch (error) {
         alert(error);
         this.$parent.dialogVisible = false;
+      } finally {
+        this.input = {
+          username: '',
+          password: '',
+        };
       }
     }
   }

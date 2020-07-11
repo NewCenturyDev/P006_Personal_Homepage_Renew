@@ -42,15 +42,10 @@ export default {
   },
   async beforeMount() {
     try {
-      await this.$store.dispatch('checkSession');
-      this.sessionCheck = true;
+      const isLoggedIn = await this.$store.dispatch('checkSession');
+      this.sessionCheck = isLoggedIn;
     } catch (error) {
-      if (error === '로그인 해주세요') {
-        this.sessionCheck = false;
-      } else {
-        this.sessionCheck = false;
-        alert(error);
-      }
+      alert(error);
     }
     if (window.innerWidth >= 500) {
       window.addEventListener('resize', () => {
