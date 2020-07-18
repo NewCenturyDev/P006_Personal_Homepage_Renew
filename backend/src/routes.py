@@ -1,5 +1,6 @@
 from flask import render_template, request, redirect, jsonify, url_for, session
 from . import app
+import simplejson as json
 
 # DB
 import pymysql
@@ -132,7 +133,7 @@ def getProfile():
   return jsonify({
     "status": {
       "success": True,
-      "message": "Github 코드네임이 변경 되었습니다",
+      "message": "프로필 조회 성공",
     },
     "profile": {
       "photo": profile["photo"],
@@ -260,5 +261,127 @@ def setProfilePhoto():
     "status": {
       "success": False,
       "message": "허용되지 않는 파일입니다",
+    }
+  }), 200
+
+@app.route("/getActivity", methods=["GET"])
+def getActivity():
+  try:
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("SELECT * FROM activity")
+    activityList = cursor.fetchall()
+    json.dumps( [dict(ix) for ix in activityList] )
+    db.commit()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "활동이력 조회 성공",
+    },
+    "activityList": activityList
+  }), 200
+
+@app.route("/createActivity", methods=["POST"])
+def createActivity():
+  if not request.is_json:
+    return "Please request by JSON", 400
+  
+  activity = request.json
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO activity (content, timestamp) VALUE (%s, %s)", (activity["content"], activity["timestamp"]))
+    db.commit()
+    cursor.execute("SELECT * FROM activity WHERE content = %s AND timestamp = %s", (activity["content"], activity["timestamp"]))
+    activity = cursor.fetchone()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+  print(activity)
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "활동이력이 추가 되었습니다",
+    },
+    "activity": {
+      "id": activity[0],
+      "content": activity[1],
+      "timestamp": activity[2]
+    }
+  }), 200
+
+@app.route("/modifyActivity", methods=["POST"])
+def modifyActivity():
+  if not request.is_json:
+    return "Please request by JSON", 400
+  
+  activity = request.json
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("UPDATE activity SET content = %s, timestamp = %s WHERE id = %s", (activity["content"], activity["timestamp"], activity["id"]))
+    db.commit()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "활동이력이 수정 되었습니다",
+    },
+    "activity": activity
+  }), 200
+
+@app.route("/deleteActivity", methods=["POST"])
+def deleteActivity():
+  if not request.is_json:
+    return "Please request by JSON", 400
+  
+  activityID = request.json.get("id", None)
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM activity WHERE id = %s", (activityID))
+    db.commit()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "활동이력이 삭제 되었습니다",
     }
   }), 200
