@@ -2,6 +2,17 @@ import Vue from 'vue';
 import backendURL from '../../plugins/host';
 
 export default {
+  async getActivity (context) {
+    try {
+      const response = await Vue.axios.get(`${backendURL}/getActivity`);
+      if (response.data.status.success === false) {
+        throw response.data.status.message;
+      }
+      context.commit('loadActivity', response.data.activityList);
+    } catch (error) {
+      throw error;
+    }
+  },
   async createActivity (context, activity) {
     if (activity.content.length === 0) {
       throw '활동 내용을 입력해 주십시오';
@@ -43,10 +54,10 @@ export default {
       if (typeof activityID !== 'number' || activityID < 1) {
         throw 'activity 오브젝트의 ID가 잘못되었습니다';
       }
-      // const response = await Vue.axios.post(`${backendURL}/deleteActivity`, activityID);
-      // if (response.data.status.success === false) {
-      //   throw response.data.status.message;
-      // }
+      const response = await Vue.axios.post(`${backendURL}/deleteActivity`, {id: activityID});
+      if (response.data.status.success === false) {
+        throw response.data.status.message;
+      }
       context.commit('deleteActivity', activityID);
       alert('삭제되었습니다.');
     } catch (error) {

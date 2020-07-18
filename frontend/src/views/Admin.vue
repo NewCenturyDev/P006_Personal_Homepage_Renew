@@ -44,7 +44,7 @@
         </el-table-column>
         <el-table-column width="160" label="Operation">
           <template slot-scope="activityScope">
-            <el-button class="editBtn" size="mini" type="primary" v-on:click="selectActivity($store.state.activities[activityScope.$index].id)">수정</el-button>
+            <el-button class="editBtn" size="mini" type="primary" v-on:click="selectActivity(activityScope.$index)">수정</el-button>
             <el-popconfirm class="deleteBtn"
               title="정말 활동이력을 삭제하시겠습니까?"
               confirmButtonText='삭제'
@@ -350,6 +350,7 @@ export default {
     async createActivity() {
       try {
         await this.$store.dispatch('createActivity', this.newActivity);
+        this.clearNewActivityInput();
       } catch (error) {
         alert(error);
       }
@@ -357,6 +358,7 @@ export default {
     async modifyActivity() {
       try {
         await this.$store.dispatch('modifyActivity', this.newActivity);
+        this.clearNewActivityInput();
       } catch (error) {
         alert(error);
       }

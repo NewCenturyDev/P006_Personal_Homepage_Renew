@@ -1,52 +1,6 @@
 export default {
   profile: {},
-  activities: [
-    {
-      id: 1,
-      content: '저현자율형공립고등학교 졸업',
-      timestamp: '2018. 02.',
-    },
-    {
-      id: 2,
-      content: '세종대학교 컴퓨터공학과 입학',
-      timestamp: '2018. 03.',
-    },
-    {
-      id: 3,
-      content: '세종대학교 2018 알고리즘 경진대회 장려상 수상',
-      timestamp: '2018. 09.',
-    },
-    {
-      id: 4,
-      content: '세종대학교 웹개발 동아리 OpenYearRound 7기',
-      timestamp: '2019. 04.',
-    },
-    {
-      id: 5,
-      content: '세종대학교 2019 알고리즘 경진대회 3등상 수상',
-      timestamp: '2019. 09.',
-    },
-    {
-      id: 6,
-      content: '세종대학교 제 7회 SW. 인공지능 해커톤 은상 수상',
-      timestamp: '2019. 12.',
-    },
-    {
-      id: 7,
-      content: 'PiLab 스타트업 병역특례(보충역) 입사',
-      timestamp: '2020. 01.',
-    },
-    {
-      id: 8,
-      content: '세종대학교 컴퓨터공학과 2학년 수료 (휴학)',
-      timestamp: '2020. 02.',
-    },
-    {
-      id: 9,
-      content: '병역특례개발자(보충역 산업기능요원) 편입',
-      timestamp: '2020. 03.',
-    },
-  ],
+  activities: [],
   skillCategory: [
     'General', 'Backend', 'Infra', 'Language', 'Frontend', 'Etc.',
   ],

@@ -1,4 +1,7 @@
 export default {
+  loadActivity (state, activityList) {
+    state.activities = activityList;
+  },
   createActivity (state, activity) {
     state.activities.push(activity);
     state.activities.sort((a, b) => (a.id > b.id));

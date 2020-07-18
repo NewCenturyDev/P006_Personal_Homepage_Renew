@@ -9,6 +9,7 @@ export default {
   async beforeMount() {
     try {
       await this.$store.dispatch('getProfile');
+      await this.$store.dispatch('getActivity');
     } catch (error) {
       alert(error);
     }
