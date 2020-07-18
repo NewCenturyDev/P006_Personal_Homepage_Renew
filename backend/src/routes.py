@@ -2,43 +2,67 @@ from flask import render_template, request, redirect, jsonify, url_for, session
 from . import app
 
 # DB
-from flask_mysqldb import MySQL
-import MySQLdb.cursors
-import re
-app.secret_key = 'asdfsadfasf'
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'page'
-app.config['MYSQL_PASSWORD'] = 'page'
-app.config['MYSQL_DB'] = 'auth'
-app.config['MYSQL_PORT'] = 3306
-mysql = MySQL(app)
+import pymysql
+db = pymysql.connect(
+  host="localhost",
+  port=3306,
+  user="page",
+  passwd="page",
+  db="page",
+  charset="utf8"
+)
 
 # cors
 from flask_cors import CORS, cross_origin
-CORS(app, resources={r'*': {'origins': 'http://localhost:8080'}})
+CORS(app, resources={r"*": {"origins": "http://localhost:8080"}})
+
+# file
+import os
+import glob
+ALLOWED_EXTENSIONS = {
+  "document": {"txt", "pdf", "md", "docx", "pptx", "xlsx"},
+  "image": {"png", "jpg", "jpeg", "gif", "bmp"},
+  "audio": {"mp3", "flac", "wav", "ogg", "webm"},
+  "video": {"mp4", "webm"},
+}
+def isAllowedFile(filename, rule):
+  return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS[rule]
+def getExtension(filename):
+  return "." + filename.rsplit(".", 1)[1].lower()
 
 # route
-@app.route('/')
+@app.route("/")
 def home():
-  return render_template('index.html')
+  return render_template("index.html")
 
-@app.route('/login', methods=['POST'])
+@app.route("/login", methods=["POST"])
 def login():
   if not request.is_json:
     return "Please request by JSON", 400
   
-  username = request.json.get('username', None)
-  password = request.json.get('password', None)
+  username = request.json.get("username", None)
+  password = request.json.get("password", None)
   
-  cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-  cursor.execute('SELECT * FROM accounts WHERE username = %s AND password = %s', (username, password))
+  try:
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("SELECT * FROM account WHERE username = %s AND password = %s", (username, password))
+    account = cursor.fetchone()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
 
-  account = cursor.fetchone()
   if account:
-    session['loggedIn'] = True
-    session['id'] = account['id']
-    session['username'] = account['username']
-    session['permission'] = account['permission']
+    session["loggedIn"] = True
+    session["id"] = account["id"]
+    session["username"] = account["username"]
+    session["permission"] = account["permission"]
     return jsonify({
       "status": {
       "success": True,
@@ -52,13 +76,13 @@ def login():
     }
   }), 200
 
-@app.route('/checkSession', methods=['POST'])
+@app.route("/checkSession", methods=["POST"])
 def checkSession():
   if not request.is_json:
     return "Please request by JSON", 400
 
   if session:
-    if session['loggedIn'] == True:
+    if session["loggedIn"] == True:
       return jsonify({
         "status": {
           "success": True,
@@ -75,7 +99,7 @@ def checkSession():
     "auth": False,
   }), 200
 
-@app.route('/logout', methods=['POST'])
+@app.route("/logout", methods=["POST"])
 def logout():
   if not request.is_json:
     return "Please request by JSON", 400
@@ -84,5 +108,157 @@ def logout():
     "status": {
       "success": True,
       "message": "로그아웃 되었습니다",
+    }
+  }), 200
+
+@app.route("/getProfile", methods=["GET"])
+def getProfile():
+  try:
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("SELECT * FROM profile WHERE id = 1")
+    profile = cursor.fetchone()
+    db.commit()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "Github 코드네임이 변경 되었습니다",
+    },
+    "profile": {
+      "photo": profile["photo"],
+      "codename": profile["codename"],
+      "presentation": profile["presentation"]
+    }
+  }), 200
+
+@app.route("/setCodename", methods=["POST"])
+def setCodename():
+  if not request.is_json:
+    return "Please request by JSON", 400
+  
+  codename = request.json.get("codename", None)
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("UPDATE profile SET codename = %s WHERE id = 1", (codename))
+    db.commit()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "Github 코드네임이 변경 되었습니다",
+    }
+  }), 200
+
+@app.route("/setPresentation", methods=["POST"])
+def setPresentation():
+  if not request.is_json:
+    return "Please request by JSON", 400
+  
+  presentation = request.json.get("presentation", None)
+  
+  try:
+    cursor = db.cursor()
+    cursor.execute("UPDATE profile SET presentation = %s WHERE id = 1", (presentation))
+    db.commit()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "자기소개 메시지가 변경 되었습니다",
+    }
+  }), 200
+
+@app.route("/setProfilePhoto", methods=["POST"])
+def setProfilePhoto():
+  # check if the post request has the file part
+  if "file" not in request.files:
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "폼데이터에 파일이 없습니다",
+      }
+    }), 200
+  newFile = request.files["file"]
+  if newFile.filename == "":
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "파일이 선택되지 않았습니다",
+      }
+    }), 200
+  if newFile and isAllowedFile(newFile.filename, "image") == True:
+    # Create profile directory if not exist
+    if not os.path.isdir(os.path.join(app.root_path, "view", "data")):
+      os.mkdir(os.path.join(app.root_path, "view", "data"))
+    if not os.path.isdir(os.path.join(app.root_path, "view", "data", "profile")):
+      os.mkdir(os.path.join(app.root_path, "view", "data", "profile"))
+    else:
+      # Delete previous image file
+      previousFile = glob.glob(os.path.join(app.root_path, "view", "data", "profile", "profilePhoto.*"))
+      for targetFile in previousFile:
+        os.remove(os.path.join(app.root_path, "view", "data", "profile", targetFile))
+
+    filename = "profilePhoto" + getExtension(newFile.filename)
+    newFile.save(os.path.join(app.root_path, "view", "data", "profile", filename))
+    url = "data/profile/" + filename
+    
+    try:
+      cursor = db.cursor()
+      cursor.execute("UPDATE profile SET photo = %s WHERE id = 1", (url))
+      db.commit()
+    except Exception as error:
+      print(error)
+      return jsonify({
+        "status": {
+          "success": False,
+          "message": "데이터베이스에 오류가 발생했습니다",
+        }
+      }), 200
+    finally:
+      cursor.close()
+
+    return jsonify({
+      "status": {
+        "success": True,
+        "message": "프로필 사진이 변경 되었습니다",
+      },
+      "url": url
+    }), 200
+
+  return jsonify({
+    "status": {
+      "success": False,
+      "message": "허용되지 않는 파일입니다",
     }
   }), 200

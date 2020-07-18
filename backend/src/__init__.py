@@ -5,4 +5,6 @@ app = Flask (__name__,
   template_folder='./view'
 )
 
+app.secret_key = 'asdfsadfasf'
+
 from . import routes
