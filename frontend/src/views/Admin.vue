@@ -268,8 +268,8 @@ export default {
   name: 'Admin',
   data() {
     return {
-      newCodename: this.$store.state.codename,
-      newPresentation: this.$store.state.presentation,
+      newCodename: this.$store.state.profile.codename,
+      newPresentation: this.$store.state.profile.presentation,
       newProfilePhoto: null,
       activityFormOpen: false,
       newActivity: {

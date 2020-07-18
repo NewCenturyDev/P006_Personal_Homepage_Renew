@@ -1,6 +1,5 @@
 export default {
-  codename: '(GitHub) HyperTech99 | Debugging BattleCruiser',
-  presentation: '열정적으로 배우는 신입 개발자 지망생입니다.<br/>보기 좋은 음식이 먹기도 좋은 법인 것처럼, 상세한 명세와 문서, 명료한 주석, 클린 코딩을 지향합니다.<br/>“1일 1개발”, “구글링의 생활화”, “StackOverFlow에 답이 있다”를 인생의 모토로 삼고 있습니다.',
+  profile: {},
   activities: [
     {
       id: 1,

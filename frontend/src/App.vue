@@ -4,6 +4,18 @@
   </div>
 </template>
 
+<script>
+export default {
+  async beforeMount() {
+    try {
+      await this.$store.dispatch('getProfile');
+    } catch (error) {
+      alert(error);
+    }
+  }
+}
+</script>
+
 <style lang="scss">
 body {
   margin: 0;

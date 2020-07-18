@@ -1,12 +1,12 @@
 <template>
   <div class="mainProfile" id="profile">
     <div class="myPhotoContainer">
-      <img class="myPhoto" width="350px" height="350px" src="@/assets/myPhoto.jpg" />
+      <img class="myPhoto" width="350px" height="350px" :src="$store.state.profile.photo" />
       <div class="name">윤성민</div>
       <el-button class="github" type="primary" v-on:click="openGithub">
-        {{ $store.state.codename }}
+        {{ $store.state.profile.codename }}
       </el-button>
-      <div class="presentation" v-html="$store.state.presentation"></div>
+      <div class="presentation" v-html="$store.state.profile.presentation"></div>
     </div>
     <div class="myHistoryContainer">
       <div class="myHistoryTitle">My History</div>
