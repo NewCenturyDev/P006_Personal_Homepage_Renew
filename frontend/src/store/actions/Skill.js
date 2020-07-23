@@ -18,7 +18,7 @@ export default {
       if (skillCategory.category.length === 0) {
         throw '기술스택 카테고리명을 입력해 주십시오';
       }
-      const response = await Vue.axios.post(`${backendURL}/createSkillCategory`, {skillCategory});
+      const response = await Vue.axios.post(`${backendURL}/createSkillCategory`, skillCategory);
       if (response.data.status.success === false) {
         throw response.data.status.message;
       }
@@ -33,7 +33,7 @@ export default {
       if (skillCategory.category.length === 0) {
         throw '기술스택 카테고리명을 입력해 주십시오';
       }
-      const response = await Vue.axios.post(`${backendURL}/modifySkillCategory`, {skillCategory});
+      const response = await Vue.axios.post(`${backendURL}/modifySkillCategory`, skillCategory);
       if (response.data.status.success === false) {
         throw response.data.status.message;
       }
@@ -48,7 +48,7 @@ export default {
       if (typeof skillCategoryID !== 'number' || skillCategoryID < 1) {
         throw '잘못된 카테고리 ID 입니다';
       }
-      const response = await Vue.axios.post(`${backendURL}/deleteSkillCategory`, {skillCategoryID});
+      const response = await Vue.axios.post(`${backendURL}/deleteSkillCategory`, {id: skillCategoryID});
       if (response.data.status.success === false) {
         throw response.data.status.message;
       }

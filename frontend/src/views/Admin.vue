@@ -90,7 +90,7 @@
         :close-on-click-modal="false"
         v-on:close="clearNewSkillCategoryInput"
         :visible.sync="skillCategoryFormOpen">
-        <el-input class="categoryName" placeholder="새 카테고리 이름" v-model="newSkillCategory"></el-input>
+        <el-input class="categoryName" placeholder="새 카테고리 이름" v-model="newSkillCategory.category"></el-input>
         <el-button v-on:click="createSkillCategory" v-if="newSkillCategory.id === null" type="primary">추가</el-button>
         <el-button v-on:click="modifySkillCategory" v-else type="primary">수정</el-button>
         <el-button v-on:click="clearNewSkillCategoryInput">취소</el-button>
