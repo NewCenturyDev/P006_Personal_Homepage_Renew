@@ -418,7 +418,7 @@ def createSkillCategory():
   if not request.is_json:
     return "Please request by JSON", 400
   
-  skillCategory
+  skillCategory = request.json
 
   try:
     cursor = db.cursor()
@@ -492,7 +492,7 @@ def deleteSkillCategory():
 
   try:
     cursor = db.cursor()
-    cursor.execute("DELETE FROM activity WHERE id = %s", (skillCategoryID))
+    cursor.execute("DELETE FROM skillCategory WHERE id = %s", (skillCategoryID))
     db.commit()
   except Exception as error:
     print(error)
