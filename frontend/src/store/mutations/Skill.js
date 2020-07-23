@@ -1,15 +1,17 @@
 export default {
-  setSkillCategory (state, skillCategory) {
-    const targetIndex = state.skillCategory.indexOf(skillCategory);
-    if (targetIndex === -1) {
-      state.skillCategory.push(skillCategory);
-      state.skillCategory.sort();
-    } else {
-      state.skillCategory.splice(targetIndex, 1, skillCategory);
-    }
+  loadSkillCategory (state, skillCategoryList) {
+    state.skillCategory = skillCategoryList;
   },
-  deleteSkillCategory (state, skillCategory) {
-    const targetIndex = state.skillCategory.indexOf(skillCategory);
+  createSkillCategory (state, skillCategory) {
+    state.skillCategory.push(skillCategory);
+    state.skillCategory.sort((a, b) => (a.id > b.id));
+  },
+  modifySkillCategory (state, skillCategory) {
+    const targetIndex = state.skillCategory.findIndex((existCategory) => (existCategory.id === skillCategory.id));
+    state.skillCategory.splice(targetIndex, 1, skillCategory);
+  },
+  deleteSkillCategory (state, skillCategoryID) {
+    const targetIndex = state.skillCategory.findIndex((existCategory) => (existCategory.id === skillCategoryID));
     state.skillCategory.splice(targetIndex, 1);
   },
   createSkill (state, skill) {

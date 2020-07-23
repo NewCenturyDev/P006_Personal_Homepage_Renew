@@ -385,3 +385,129 @@ def deleteActivity():
       "message": "활동이력이 삭제 되었습니다",
     }
   }), 200
+
+@app.route("/getSkillCategory", methods=["GET"])
+def getSkillCategory():
+  try:
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("SELECT * FROM skillcategory")
+    skillCategoryList = cursor.fetchall()
+    json.dumps( [dict(ix) for ix in skillCategoryList] )
+    db.commit()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "카테고리 조회 성공",
+    },
+    "skillCategoryList": skillCategoryList
+  }), 200
+
+@app.route("/createSkillCategory", methods=["POST"])
+def createSkillCategory():
+  if not request.is_json:
+    return "Please request by JSON", 400
+  
+  skillCategory
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO skillCategory (category) VALUE (%s)", (skillCategory["category"]))
+    db.commit()
+    cursor.execute("SELECT * FROM skillCategory WHERE category = %s", (skillCategory["category"]))
+    skillCategory = cursor.fetchone()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+  print(skillCategory)
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "카테고리가 추가 되었습니다",
+    },
+    "skillCategory": {
+      "id": skillCategory[0],
+      "category": skillCategory[1]
+    }
+  }), 200
+
+@app.route("/modifySkillCategory", methods=["POST"])
+def modifySkillCategory():
+  if not request.is_json:
+    return "Please request by JSON", 400
+  
+  skillCategory = request.json
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("UPDATE skillCategory SET category = %s WHERE id = %s", (skillCategory["category"], skillCategory["id"]))
+    db.commit()
+    cursor.execute("SELECT * FROM skillCategory WHERE category = %s", (skillCategory["category"]))
+    skillCategory = cursor.fetchone()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+  print(skillCategory)
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "카테고리가 추가 되었습니다",
+    },
+    "skillCategory": {
+      "id": skillCategory[0],
+      "category": skillCategory[1]
+    }
+  }), 200
+
+@app.route("/deleteSkillCategory", methods=["POST"])
+def deleteSkillCategory():
+  if not request.is_json:
+    return "Please request by JSON", 400
+  
+  skillCategoryID = request.json.get("id", None)
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM activity WHERE id = %s", (skillCategoryID))
+    db.commit()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "카테고리가 삭제 되었습니다",
+    }
+  }), 200

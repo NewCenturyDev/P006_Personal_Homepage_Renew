@@ -1,9 +1,7 @@
 export default {
   profile: {},
   activities: [],
-  skillCategory: [
-    'General', 'Backend', 'Infra', 'Language', 'Frontend', 'Etc.',
-  ],
+  skillCategory: [],
   skills: [
     {
       id: 1,

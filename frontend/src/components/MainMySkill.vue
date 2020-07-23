@@ -6,10 +6,10 @@
         v-for="(skillCategory, skillCategoryIndex) in $store.state.skillCategory"
         :style="{ backgroundColor: getBackgroundColor(skillCategoryIndex) }"
         :key="skillCategoryIndex">
-        <div class="skillTitle">{{ skillCategory }}</div>
+        <div class="skillTitle">{{ skillCategory.category }}</div>
         <div class="skillContainer">
           <div class="skill"
-            v-for="(skill, skillIndex) in $store.getters.getSkillByCategory(skillCategory)"
+            v-for="(skill, skillIndex) in $store.getters.getSkillByCategory(skillCategory.category)"
             :key="skillIndex">
             <img class="skillImage" :src="require(`../assets/skill/${skill.image}`)" />
             <div class="skillName">{{ skill.name }}</div>

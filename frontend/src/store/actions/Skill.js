@@ -2,31 +2,57 @@ import Vue from 'vue';
 import backendURL from '../../plugins/host';
 
 export default {
-  async setSkillCategory (context, skillCategory) {
+  async getSkillCategory (context) {
     try {
-      if (skillCategory.length === 0) {
-        throw '기술스택 카테고리를 입력해 주십시오';
-      }
-      const response = await Vue.axios.post(`${backendURL}/setSkillCategory`, skillCategory);
+      const response = await Vue.axios.get(`${backendURL}/getSkillCategory`);
       if (response.data.status.success === false) {
         throw response.data.status.message;
       }
-      context.commit('setSkillCategory', skillCategory);
-      alert('설정되었습니다.');
+      context.commit('loadSkillCategory', response.data.skillCategoryList);
     } catch (error) {
       throw error;
     }
   },
-  async deleteSkillCategory (context, skillCategory) {
+  async createSkillCategory (context, skillCategory) {
     try {
-      if (skillCategory === '') {
-        throw '잘못된 카테고리입니다';
+      if (skillCategory.category.length === 0) {
+        throw '기술스택 카테고리명을 입력해 주십시오';
       }
-      const response = await Vue.axios.post(`${backendURL}/deleteSkillCategory`, skillCategory);
+      const response = await Vue.axios.post(`${backendURL}/createSkillCategory`, {skillCategory});
       if (response.data.status.success === false) {
         throw response.data.status.message;
       }
-      context.commit('deleteSkillCategory', skillCategory);
+      context.commit('createSkillCategory', response.data.skillCategory);
+      alert('추가되었습니다.');
+    } catch (error) {
+      throw error;
+    }
+  },
+  async modifySkillCategory (context, skillCategory) {
+    try {
+      if (skillCategory.category.length === 0) {
+        throw '기술스택 카테고리명을 입력해 주십시오';
+      }
+      const response = await Vue.axios.post(`${backendURL}/modifySkillCategory`, {skillCategory});
+      if (response.data.status.success === false) {
+        throw response.data.status.message;
+      }
+      context.commit('modifySkillCategory', response.data.skillCategory);
+      alert('변경되었습니다.');
+    } catch (error) {
+      throw error;
+    }
+  },
+  async deleteSkillCategory (context, skillCategoryID) {
+    try {
+      if (typeof skillCategoryID !== 'number' || skillCategoryID < 1) {
+        throw '잘못된 카테고리 ID 입니다';
+      }
+      const response = await Vue.axios.post(`${backendURL}/deleteSkillCategory`, {skillCategoryID});
+      if (response.data.status.success === false) {
+        throw response.data.status.message;
+      }
+      context.commit('deleteSkillCategory', skillCategoryID);
       alert('삭제되었습니다.');
     } catch (error) {
       throw error;

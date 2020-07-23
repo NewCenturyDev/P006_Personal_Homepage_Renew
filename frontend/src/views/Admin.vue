@@ -74,13 +74,13 @@
         <el-card class="category"
           v-for="(skillCategory, skillCategoryIndex) in $store.state.skillCategory"
           :key="skillCategoryIndex">
-          <div class="categoryName">{{ skillCategory }}</div>
+          <div class="categoryName">{{ skillCategory.category }}</div>
           <el-button v-on:click="selectSkillCategory(skillCategory)" size="mini" type="plane">수정</el-button>
           <el-popconfirm
             title="정말 카테고리를 삭제하시겠습니까?"
             confirmButtonText='삭제'
             cancelButtonText='취소'
-            v-on:onConfirm="deleteSkillCategory(skillCategory)">
+            v-on:onConfirm="deleteSkillCategory(skillCategory.id)">
             <el-button size="mini" type="plane" slot="reference">삭제</el-button>
           </el-popconfirm>
         </el-card>
@@ -91,7 +91,8 @@
         v-on:close="clearNewSkillCategoryInput"
         :visible.sync="skillCategoryFormOpen">
         <el-input class="categoryName" placeholder="새 카테고리 이름" v-model="newSkillCategory"></el-input>
-        <el-button v-on:click="setSkillCategory" type="primary">설정</el-button>
+        <el-button v-on:click="createSkillCategory" v-if="newSkillCategory.id === null" type="primary">추가</el-button>
+        <el-button v-on:click="modifySkillCategory" v-else type="primary">수정</el-button>
         <el-button v-on:click="clearNewSkillCategoryInput">취소</el-button>
       </el-dialog>
       <div class="settingOption">기술스택 목록 관리</div>
@@ -134,8 +135,8 @@
           <el-option
             v-for="(skillCategory, skillCategoryIndex) in $store.state.skillCategory"
             :key="skillCategoryIndex"
-            :label="skillCategory"
-            :value="skillCategory">
+            :label="skillCategory.category"
+            :value="skillCategory.category">
           </el-option>
         </el-select>
         <input class="skillImage" type="file" placeholder="기술스택 이미지" ref="skillImage" v-on:change="selectSkillImage()"/>
@@ -279,7 +280,10 @@ export default {
       },
       skillFormOpen: false,
       skillCategoryFormOpen: false,
-      newSkillCategory: '',
+      newSkillCategory: {
+        id: null,
+        category: '',
+      },
       newSkill: {
         id: null,
         name: '',
@@ -378,22 +382,34 @@ export default {
       this.newSkillCategory = category;
       this.skillCategoryFormOpen = true;
     },
-    async setSkillCategory() {
+    async createSkillCategory() {
       try {
-        await this.$store.dispatch('setSkillCategory', this.newSkillCategory);
+        await this.$store.dispatch('createSkillCategory', this.newSkillCategory);
+        this.clearNewSkillCategoryInput();
       } catch (error) {
         alert(error);
       }
     },
-    async deleteSkillCategory(category) {
+    async modifySkillCategory() {
       try {
-        await this.$store.dispatch('deleteSkillCategory', category);
+        await this.$store.dispatch('modifySkillCategory', this.newSkillCategory);
+        this.clearNewSkillCategoryInput();
+      } catch (error) {
+        alert(error);
+      }
+    },
+    async deleteSkillCategory(categoryID) {
+      try {
+        await this.$store.dispatch('deleteSkillCategory', categoryID);
       } catch (error) {
         alert(error);
       }
     },
     clearNewSkillCategoryInput() {
-      this.newSkillCategory = '';
+      this.newSkillCategory = {
+        id: null,
+        category: '',
+      };
       this.skillCategoryFormOpen = false;
     },
     selectSkill(skillIndex) {

@@ -10,6 +10,7 @@ export default {
     try {
       await this.$store.dispatch('getProfile');
       await this.$store.dispatch('getActivity');
+      await this.$store.dispatch('getSkillCategory');
     } catch (error) {
       alert(error);
     }
