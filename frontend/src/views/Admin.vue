@@ -419,6 +419,7 @@ export default {
     async createSkill() {
       try {
         await this.$store.dispatch('createSkill', this.newSkill);
+        this.clearNewSkillInput();
       } catch (error) {
         alert(error);
       }
@@ -426,6 +427,7 @@ export default {
     async modifySkill() {
       try {
         await this.$store.dispatch('modifySkill', this.newSkill);
+        this.clearNewSkillInput();
       } catch (error) {
         alert(error);
       }

@@ -11,7 +11,7 @@
           <div class="skill"
             v-for="(skill, skillIndex) in $store.getters.getSkillByCategory(skillCategory.category)"
             :key="skillIndex">
-            <img class="skillImage" :src="require(`../assets/skill/${skill.image}`)" />
+            <img class="skillImage" :src="skill.image" />
             <div class="skillName">{{ skill.name }}</div>
           </div>
         </div>

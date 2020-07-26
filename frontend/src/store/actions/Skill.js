@@ -58,6 +58,17 @@ export default {
       throw error;
     }
   },
+  async getSkillList (context) {
+    try {
+      const response = await Vue.axios.get(`${backendURL}/getSkillList`);
+      if (response.data.status.success === false) {
+        throw response.data.status.message;
+      }
+      context.commit('loadSkillList', response.data.skillList);
+    } catch (error) {
+      throw error;
+    }
+  },
   async createSkill (context, skill) {
     if (skill.name.length === 0) {
       throw '기술스택 이름을 입력해 주십시오';
@@ -70,7 +81,14 @@ export default {
       if (response.data.status.success === false) {
         throw response.data.status.message;
       }
-      context.commit('createSkill', response.data.skill);  //skillObject
+      const formData = new FormData();
+      formData.append('file', skill.image);
+      formData.append('skillID', response.data.skillID[0]);
+      const fileUploadResponse = await Vue.axios.post(`${backendURL}/uploadSkillImage`, formData);
+      if (fileUploadResponse.data.status.success === false) {
+        throw fileUploadResponse.data.status.message;
+      }
+      context.commit('createSkill', fileUploadResponse.data.skill);  //skillObject
       alert('추가되었습니다.');
     } catch (error) {
       throw error;
@@ -80,15 +98,24 @@ export default {
     if (skill.name.length === 0) {
       throw '기술스택 이름을 입력해 주십시오';
     }
-    if (skill.image === null) {
-      throw '기술스택 스크린샷을 1장 이상 첨부해 주십시오';
-    }
     try {
       const response = await Vue.axios.post(`${backendURL}/modifySkill`, skill);
       if (response.data.status.success === false) {
         throw response.data.status.message;
       }
-      context.commit('modifySkill', response.data.skill);  //skillObject
+      if (typeof skill.image === 'object') {
+        const formData = new FormData();
+        formData.append('file', skill.image);
+        formData.append('skillID', response.data.skill.id);
+        const fileUploadResponse = await Vue.axios.post(`${backendURL}/uploadSkillImage`, formData);
+        if (fileUploadResponse.data.status.success === false) {
+          throw fileUploadResponse.data.status.message;
+        }
+        context.commit('modifySkill', fileUploadResponse.data.skill);  //skillObject
+      }
+      else {
+        context.commit('modifySkill', response.data.skill);  //skillObject
+      }
       alert('변경되었습니다.');
     } catch (error) {
       throw error;
@@ -99,7 +126,7 @@ export default {
       if (typeof skillID !== 'number' || skillID < 1) {
         throw 'skill 오브젝트의 ID가 잘못되었습니다';
       }
-      const response = await Vue.axios.post(`${backendURL}/deleteSkill`, skillID);
+      const response = await Vue.axios.post(`${backendURL}/deleteSkill`, {id: skillID});
       if (response.data.status.success === false) {
         throw response.data.status.message;
       }

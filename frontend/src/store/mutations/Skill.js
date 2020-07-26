@@ -14,6 +14,9 @@ export default {
     const targetIndex = state.skillCategory.findIndex((existCategory) => (existCategory.id === skillCategoryID));
     state.skillCategory.splice(targetIndex, 1);
   },
+  loadSkillList (state, skillList) {
+    state.skills = skillList;
+  },
   createSkill (state, skill) {
     state.skills.push(skill);
     state.skills.sort((a, b) => (a.id > b.id));

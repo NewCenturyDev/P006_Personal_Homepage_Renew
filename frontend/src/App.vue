@@ -11,6 +11,7 @@ export default {
       await this.$store.dispatch('getProfile');
       await this.$store.dispatch('getActivity');
       await this.$store.dispatch('getSkillCategory');
+      await this.$store.dispatch('getSkillList');
     } catch (error) {
       alert(error);
     }
