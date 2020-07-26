@@ -511,3 +511,201 @@ def deleteSkillCategory():
       "message": "카테고리가 삭제 되었습니다",
     }
   }), 200
+
+@app.route("/getSkillList", methods=["GET"])
+def getSkillList():
+  try:
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("SELECT * FROM skill")
+    skillList = cursor.fetchall()
+    json.dumps( [dict(ix) for ix in skillList] )
+    db.commit()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "기술스택 조회 성공",
+    },
+    "skillList": skillList
+  }), 200
+
+@app.route("/uploadSkillImage", methods=["POST"])
+def uploadSkillImage():
+  if "file" not in request.files:
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "폼데이터에 파일이 없습니다",
+      }
+    }), 200
+  newFile = request.files["file"]
+  skillID = request.form["skillID"]
+  print(skillID)
+  if newFile.filename == "":
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "파일이 선택되지 않았습니다",
+      }
+    }), 200
+  if newFile and isAllowedFile(newFile.filename, "image") == True:
+    # Create profile directory if not exist
+    if not os.path.isdir(os.path.join(app.root_path, "view", "data")):
+      os.mkdir(os.path.join(app.root_path, "view", "data"))
+    if not os.path.isdir(os.path.join(app.root_path, "view", "data", "skill")):
+      os.mkdir(os.path.join(app.root_path, "view", "data", "skill"))
+    else:
+      # Delete previous image file
+      previousFile = glob.glob(os.path.join(app.root_path, "view", "data", "skill", "skill_" + skillID + ".*"))
+      for targetFile in previousFile:
+        os.remove(os.path.join(app.root_path, "view", "data", "skill", targetFile))
+
+    filename = "skill_" + skillID + getExtension(newFile.filename)
+    newFile.save(os.path.join(app.root_path, "view", "data", "skill", filename))
+    url = "data/skill/" + filename
+  try:
+    cursor = db.cursor()
+    cursor.execute("UPDATE skill SET image = %s WHERE id = %s", (url, skillID))
+    db.commit()
+    cursor.execute("SELECT * FROM skill WHERE id = %s", skillID)
+    skill = cursor.fetchone()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+  
+  return jsonify({
+      "status": {
+        "success": True,
+        "message": "기술스택 이미지가 업로드 되었습니다",
+      },
+      "skill": {
+        "id": skill[0],
+        "name": skill[1],
+        "category": skill[2],
+        "image": skill[3]
+      }
+    }), 200
+
+@app.route("/createSkill", methods=["POST"])
+def createSkill():
+  if not request.is_json:
+    return "Please request by JSON", 400
+
+  skill = request.json
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO skill (name, category) VALUE (%s, %s)", (skill["name"], skill["category"]))
+    db.commit()
+    cursor.execute("SELECT id FROM skill WHERE name = %s", (skill["name"]))
+    skillID = cursor.fetchone()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+  
+  print(skill)
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "기술스택이 추가 되었습니다, 파일을 업로드하세요",
+    },
+    "skillID": skillID
+  }), 200
+
+@app.route("/modifySkill", methods=["POST"])
+def modifySkill():
+  if not request.is_json:
+    return "Please request by JSON", 400
+  
+  skill = request.json
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("UPDATE skill SET name = %s, category = %s WHERE id = %s", (skill["name"], skill["category"], skill["id"]))
+    db.commit()
+    cursor.execute("SELECT * FROM skill WHERE id = %s", skill["id"])
+    skill = cursor.fetchone()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+  
+  print(skill)
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "기술스택이 추가 되었습니다",
+    },
+    "skill": {
+      "id": skill[0],
+      "name": skill[1],
+      "category": skill[2],
+      "image": skill[3]
+    }
+  }), 200
+
+@app.route("/deleteSkill", methods=["POST"])
+def deleteSkill():
+  if not request.is_json:
+    return "Please request by JSON", 400
+  
+  skillID = request.json.get("id", None)
+
+  if os.path.isdir(os.path.join(app.root_path, "view", "data", "skill")):
+    # Delete previous image file
+    previousFile = glob.glob(os.path.join(app.root_path, "view", "data", "skill", "skill_" + str(skillID) + ".*"))
+    print(previousFile)
+    for targetFile in previousFile:
+      os.remove(os.path.join(app.root_path, "view", "data", "skill", targetFile))
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM skill WHERE id = %s", (skillID))
+    db.commit()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "기술스택이 삭제 되었습니다",
+    }
+  }), 200
