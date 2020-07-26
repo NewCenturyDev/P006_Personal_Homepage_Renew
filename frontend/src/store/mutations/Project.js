@@ -1,15 +1,17 @@
 export default {
-  setProjectCategory (state, projectCategory) {
-    const targetIndex = state.projectCategory.indexOf(projectCategory);
-    if (targetIndex === -1) {
-      state.projectCategory.push(projectCategory);
-      state.projectCategory.sort();
-    } else {
-      state.projectCategory.splice(targetIndex, 1, projectCategory);
-    }
+  loadProjectCategory (state, projectCategoryList) {
+    state.projectCategory = projectCategoryList;
   },
-  deleteProjectCategory (state, projectCategory) {
-    const targetIndex = state.projectCategory.indexOf(projectCategory);
+  createProjectCategory (state, projectCategory) {
+    state.projectCategory.push(projectCategory);
+    state.projectCategory.sort((a, b) => (a.id > b.id));
+  },
+  modifyProjectCategory (state, projectCategory) {
+    const targetIndex = state.projectCategory.findIndex((existCategory) => (existCategory.id === projectCategory.id));
+    state.projectCategory.splice(targetIndex, 1, projectCategory);
+  },
+  deleteProjectCategory (state, projectCategoryID) {
+    const targetIndex = state.projectCategory.findIndex((existCategory) => (existCategory.id === projectCategoryID));
     state.projectCategory.splice(targetIndex, 1);
   },
   createProject (state, project) {

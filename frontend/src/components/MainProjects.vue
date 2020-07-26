@@ -4,14 +4,14 @@
     <div class="myProjectContainer">
       <el-tabs v-model="activeTab">
         <el-tab-pane
-          v-for="(category, categoryIndex) in $store.state.projectCategory"
+          v-for="(projectCategory, categoryIndex) in $store.state.projectCategory"
           :key="categoryIndex"
-          :name="category"
-          :label="category">
+          :name="projectCategory.category"
+          :label="projectCategory.category">
             <div class="cardContainer"
-              v-for="(project, projectIndex) in $store.getters.getProjectByCategory(category)"
+              v-for="(project, projectIndex) in $store.getters.getProjectByCategory(projectCategory.category)"
               :key="projectIndex">
-              <el-card v-if="$store.getters.getProjectByCategory(category).length !== 0" shadow="hover" body-style="{ width: calc(100% - 50px); padding: 0; }">
+              <el-card shadow="hover" body-style="{ width: calc(100% - 50px); padding: 0; }">
                 <div class="projectList">
                   <div class="projectImageContainer">
                     <img class="projectImage" :src="`../assets/projects/${project.screenshot[0]}`" />
@@ -37,9 +37,6 @@
                   </div>
                 </div>
               </el-card>
-              <div v-else>
-                해당 분류에 속하는 프로젝트가 없습니다.
-              </div>
             </div>
           </el-tab-pane>
         </el-tabs>

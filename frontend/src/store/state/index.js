@@ -3,7 +3,7 @@ export default {
   activities: [],
   skillCategory: [],
   skills: [],
-  projectCategory: ['Web', 'Android', 'Etc.'],
+  projectCategory: [],
   projects: [
     {
       id: 1,

@@ -2,31 +2,57 @@ import Vue from 'vue';
 import backendURL from '../../plugins/host';
 
 export default {
-  async setProjectCategory (context, projectCategory) {
+  async getProjectCategory (context) {
     try {
-      if (projectCategory.length === 0) {
-        throw '프로젝트 카테고리를 입력해 주십시오';
-      }
-      const response = await Vue.axios.post(`${backendURL}/setProjectCategory`, projectCategory);
+      const response = await Vue.axios.get(`${backendURL}/getProjectCategory`);
       if (response.data.status.success === false) {
         throw response.data.status.message;
       }
-      context.commit('setProjectCategory', projectCategory);
-      alert('설정되었습니다.');
+      context.commit('loadProjectCategory', response.data.projectCategoryList);
     } catch (error) {
       throw error;
     }
   },
-  async deleteProjectCategory (context, projectCategory) {
-    if (projectCategory === '') {
-      throw '잘못된 카테고리입니다';
-    }
+  async createProjectCategory (context, projectCategory) {
     try {
-      const response = await Vue.axios.post(`${backendURL}/deleteProjectCategory`, projectCategory);
+      if (projectCategory.category.length === 0) {
+        throw '프로젝트 카테고리명을 입력해 주십시오';
+      }
+      const response = await Vue.axios.post(`${backendURL}/createProjectCategory`, projectCategory);
       if (response.data.status.success === false) {
         throw response.data.status.message;
       }
-      context.commit('deleteProjectCategory', projectCategory);
+      context.commit('createProjectCategory', response.data.projectCategory);
+      alert('추가되었습니다.');
+    } catch (error) {
+      throw error;
+    }
+  },
+  async modifyProjectCategory (context, projectCategory) {
+    try {
+      if (projectCategory.category.length === 0) {
+        throw '프로젝트 카테고리명을 입력해 주십시오';
+      }
+      const response = await Vue.axios.post(`${backendURL}/modifyProjectCategory`, projectCategory);
+      if (response.data.status.success === false) {
+        throw response.data.status.message;
+      }
+      context.commit('modifyProjectCategory', response.data.projectCategory);
+      alert('변경되었습니다.');
+    } catch (error) {
+      throw error;
+    }
+  },
+  async deleteProjectCategory (context, projectCategoryID) {
+    try {
+      if (typeof projectCategoryID !== 'number' || projectCategoryID < 1) {
+        throw '잘못된 카테고리 ID 입니다';
+      }
+      const response = await Vue.axios.post(`${backendURL}/deleteProjectCategory`, {id: projectCategoryID});
+      if (response.data.status.success === false) {
+        throw response.data.status.message;
+      }
+      context.commit('deleteProjectCategory', projectCategoryID);
       alert('삭제되었습니다.');
     } catch (error) {
       throw error;

@@ -153,13 +153,13 @@
         <el-card class="category"
           v-for="(projectCategory, projectCategoryIndex) in $store.state.projectCategory"
           :key="projectCategoryIndex">
-          <div class="categoryName">{{ projectCategory }}</div>
+          <div class="categoryName">{{ projectCategory.category }}</div>
           <el-button v-on:click="selectProjectCategory(projectCategory)" size="mini" type="plane">수정</el-button>
           <el-popconfirm
             title="정말 카테고리를 삭제하시겠습니까?"
             confirmButtonText='삭제'
             cancelButtonText='취소'
-            v-on:onConfirm="deleteProjectCategory(projectCategory)">
+            v-on:onConfirm="deleteProjectCategory(projectCategory.id)">
             <el-button size="mini" type="plane" slot="reference">삭제</el-button>
           </el-popconfirm>
         </el-card>
@@ -169,8 +169,9 @@
         :close-on-click-modal="false"
         v-on:close="clearNewProjectCategoryInput"
         :visible.sync="projectCategoryFormOpen">
-        <el-input class="categoryName" placeholder="새 카테고리 이름" v-model="newProjectCategory"></el-input>
-        <el-button class="confirmBtn" v-on:click="setProjectCategory" type="primary">추가</el-button>
+        <el-input class="categoryName" placeholder="새 카테고리 이름" v-model="newProjectCategory.category"></el-input>
+        <el-button v-on:click="createProjectCategory" v-if="newProjectCategory.id === null" type="primary">추가</el-button>
+        <el-button v-on:click="modifyProjectCategory" v-else type="primary">수정</el-button>
         <el-button v-on:click="clearNewProjectCategoryInput">취소</el-button>
       </el-dialog>
       <div class="settingOption">프로젝트 목록</div>
@@ -292,7 +293,10 @@ export default {
       },
       projectFormOpen: false,
       projectCategoryFormOpen: false,
-      newProjectCategory: '',
+      newProjectCategory: {
+        id: null,
+        category: '',
+      },
       newProject: {
         id: null,
         category: '',
@@ -456,16 +460,25 @@ export default {
       this.newProjectCategory = category;
       this.projectCategoryFormOpen = true;
     },
-    async setProjectCategory(){
+    async createProjectCategory() {
       try {
-        await this.$store.dispatch('setProjectCategory', this.newProjectCategory);
+        await this.$store.dispatch('createProjectCategory', this.newProjectCategory);
+        this.clearNewProjectCategoryInput();
       } catch (error) {
         alert(error);
       }
     },
-    async deleteProjectCategory(category) {
+    async modifyProjectCategory() {
       try {
-        await this.$store.dispatch('deleteProjectCategory', category);
+        await this.$store.dispatch('modifyProjectCategory', this.newProjectCategory);
+        this.clearNewProjectCategoryInput();
+      } catch (error) {
+        alert(error);
+      }
+    },
+    async deleteProjectCategory(categoryID) {
+      try {
+        await this.$store.dispatch('deleteProjectCategory', categoryID);
       } catch (error) {
         alert(error);
       }
