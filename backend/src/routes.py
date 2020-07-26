@@ -390,7 +390,7 @@ def deleteActivity():
 def getSkillCategory():
   try:
     cursor = db.cursor(pymysql.cursors.DictCursor)
-    cursor.execute("SELECT * FROM skillcategory")
+    cursor.execute("SELECT * FROM skillcategory ORDER BY id")
     skillCategoryList = cursor.fetchall()
     json.dumps( [dict(ix) for ix in skillCategoryList] )
     db.commit()
@@ -707,5 +707,132 @@ def deleteSkill():
     "status": {
       "success": True,
       "message": "기술스택이 삭제 되었습니다",
+    }
+  }), 200
+
+
+@app.route("/getProjectCategory", methods=["GET"])
+def getProjectCategory():
+  try:
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("SELECT * FROM projectcategory ORDER BY id")
+    projectCategoryList = cursor.fetchall()
+    json.dumps( [dict(ix) for ix in projectCategoryList] )
+    db.commit()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "카테고리 조회 성공",
+    },
+    "projectCategoryList": projectCategoryList
+  }), 200
+
+@app.route("/createProjectCategory", methods=["POST"])
+def createProjectCategory():
+  if not request.is_json:
+    return "Please request by JSON", 400
+  
+  projectCategory = request.json
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO projectCategory (category) VALUE (%s)", (projectCategory["category"]))
+    db.commit()
+    cursor.execute("SELECT * FROM projectCategory WHERE category = %s", (projectCategory["category"]))
+    projectCategory = cursor.fetchone()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+  print(projectCategory)
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "카테고리가 추가 되었습니다",
+    },
+    "projectCategory": {
+      "id": projectCategory[0],
+      "category": projectCategory[1]
+    }
+  }), 200
+
+@app.route("/modifyProjectCategory", methods=["POST"])
+def modifyProjectCategory():
+  if not request.is_json:
+    return "Please request by JSON", 400
+  
+  projectCategory = request.json
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("UPDATE projectCategory SET category = %s WHERE id = %s", (projectCategory["category"], projectCategory["id"]))
+    db.commit()
+    cursor.execute("SELECT * FROM projectCategory WHERE category = %s", (projectCategory["category"]))
+    projectCategory = cursor.fetchone()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+  print(projectCategory)
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "카테고리가 추가 되었습니다",
+    },
+    "projectCategory": {
+      "id": projectCategory[0],
+      "category": projectCategory[1]
+    }
+  }), 200
+
+@app.route("/deleteProjectCategory", methods=["POST"])
+def deleteProjectCategory():
+  if not request.is_json:
+    return "Please request by JSON", 400
+  
+  projectCategoryID = request.json.get("id", None)
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM projectCategory WHERE id = %s", (projectCategoryID))
+    db.commit()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "카테고리가 삭제 되었습니다",
     }
   }), 200
