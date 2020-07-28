@@ -475,7 +475,7 @@ def modifySkillCategory():
   return jsonify({
     "status": {
       "success": True,
-      "message": "카테고리가 추가 되었습니다",
+      "message": "카테고리가 수정 되었습니다",
     },
     "skillCategory": {
       "id": skillCategory[0],
@@ -664,7 +664,7 @@ def modifySkill():
   return jsonify({
     "status": {
       "success": True,
-      "message": "기술스택이 추가 되었습니다",
+      "message": "기술스택이 수정 되었습니다",
     },
     "skill": {
       "id": skill[0],
@@ -800,7 +800,7 @@ def modifyProjectCategory():
   return jsonify({
     "status": {
       "success": True,
-      "message": "카테고리가 추가 되었습니다",
+      "message": "카테고리가 수정 되었습니다",
     },
     "projectCategory": {
       "id": projectCategory[0],
@@ -834,5 +834,222 @@ def deleteProjectCategory():
     "status": {
       "success": True,
       "message": "카테고리가 삭제 되었습니다",
+    }
+  }), 200
+
+@app.route("/getProjectList", methods=["GET"])
+def getProjectList():
+  try:
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("SELECT * FROM project ORDER BY id")
+    projectList = cursor.fetchall()
+    json.dumps( [dict(ix) for ix in projectList] )
+    db.commit()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "기술스택 조회 성공",
+    },
+    "projectList": projectList
+  }), 200
+
+@app.route("/uploadProjectScreenshotImage", methods=["POST"])
+def uploadProjectScreenshotImage():
+  if "file" not in request.files:
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "폼데이터에 파일이 없습니다",
+      }
+    }), 200
+  newFileList = request.files.getlist("file")
+  projectID = request.form["projectID"]
+  print(projectID)
+  # Create profile directory if not exist
+  if not os.path.isdir(os.path.join(app.root_path, "view", "data")):
+    os.mkdir(os.path.join(app.root_path, "view", "data"))
+  if not os.path.isdir(os.path.join(app.root_path, "view", "data", "project")):
+    os.mkdir(os.path.join(app.root_path, "view", "data", "project"))
+  if not os.path.isdir(os.path.join(app.root_path, "view", "data", "project", projectID)):
+    os.mkdir(os.path.join(app.root_path, "view", "data", "project", projectID))
+  # Delete previous image file
+  previousFile = glob.glob(os.path.join(app.root_path, "view", "data", "project", projectID, "*.*"))
+  for targetFile in previousFile:
+    if os.path.exists(os.path.join(app.root_path, "view", "data", "project", projectID, targetFile)):
+      os.remove(os.path.join(app.root_path, "view", "data", "project", projectID, targetFile))
+
+  fileCount = 0
+  urlList = []
+  for newFile in newFileList:
+    if newFile and isAllowedFile(newFile.filename, "image") == False:
+      continue
+    fileCount += 1
+    filename = "project_screenshot_" + str(fileCount) + getExtension(newFile.filename)
+    newFile.save(os.path.join(app.root_path, "view", "data", "project", projectID, filename))
+    urlList.append("data/project/" + projectID + "/" + filename)
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("UPDATE project SET screenshot = %s WHERE id = %s", (json.dumps(urlList), projectID))
+    db.commit()
+    cursor.execute("SELECT * FROM project WHERE id = %s", projectID)
+    project = cursor.fetchone()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+  
+  return jsonify({
+      "status": {
+        "success": True,
+        "message": "프로젝트 스크린샷 이미지가 업로드 되었습니다",
+      },
+      "project": {
+        "id": project[0],
+        "name": project[1],
+        "category": project[2],
+        "link": project[3],
+        "discription": project[4],
+        "content": project[5],
+        "screenshot": project[6],
+        "stackTags": project[7]
+      }
+    }), 200
+
+@app.route("/createProject", methods=["POST"])
+def createProject():
+  if not request.is_json:
+    return "Please request by JSON", 400
+
+  project = request.json
+
+  # 쉼표로 구분된 게시물 태그를 공백 무시하고 쉼표 기준으로 리스트로 변환
+  stackTagList = project["stackTags"].replace(" ", "").split(",")
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO project (name, category, link, discription, content, tags) VALUE (%s, %s, %s, %s, %s, %s)", (project["name"], project["category"], project["link"], project["discription"], project["content"], json.dumps(stackTagList)))
+    db.commit()
+    cursor.execute("SELECT id FROM project WHERE name = %s", (project["name"]))
+    projectID = cursor.fetchone()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+  
+  print(project)
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "프로젝트 상세정보가 추가 되었습니다, 파일을 업로드하세요",
+    },
+    "projectID": projectID
+  }), 200
+
+@app.route("/modifyProject", methods=["POST"])
+def modifyProject():
+  if not request.is_json:
+    return "Please request by JSON", 400
+  
+  project = request.json
+
+  # 쉼표로 구분된 게시물 태그를 공백 무시하고 쉼표 기준으로 리스트로 변환
+  print(type(project["stackTags"]))
+  if type(project["stackTags"]) == list:
+    stackTagList = project["stackTags"]
+  else:
+    stackTagList = project["stackTags"].replace(" ", "").split(",")
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("UPDATE project SET name = %s, category = %s, link = %s, discription = %s, content = %s, tags = %s WHERE id = %s", (project["name"], project["category"], project["link"], project["discription"], project["content"], json.dumps(stackTagList), project["id"]))
+    db.commit()
+    cursor.execute("SELECT * FROM project WHERE id = %s", project["id"])
+    project = cursor.fetchone()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+  
+  print(project)
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "프로젝트 상세정보가 변경 되었습니다",
+    },
+    "project": {
+      "id": project[0],
+      "name": project[1],
+      "category": project[2],
+      "link": project[3],
+      "discription": project[4],
+      "content": project[5],
+      "screenshot": project[6],
+      "stackTags": project[7]
+    }
+  }), 200
+
+@app.route("/deleteProject", methods=["POST"])
+def deleteProject():
+  if not request.is_json:
+    return "Please request by JSON", 400
+  
+  projectID = request.json.get("id", None)
+
+  if os.path.isdir(os.path.join(app.root_path, "view", "data", "project", str(projectID))):
+    # Delete previous image file
+    previousFile = glob.glob(os.path.join(app.root_path, "view", "data", "project", str(projectID) + "*.*"))
+    print(previousFile)
+    for targetFile in previousFile:
+      os.remove(os.path.join(app.root_path, "view", "data", "project", str(projectID), targetFile))
+
+  try:
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM project WHERE id = %s", (projectID))
+    db.commit()
+  except Exception as error:
+    print(error)
+    return jsonify({
+      "status": {
+        "success": False,
+        "message": "데이터베이스에 오류가 발생했습니다",
+      }
+    }), 200
+  finally:
+    cursor.close()
+
+  return jsonify({
+    "status": {
+      "success": True,
+      "message": "프로젝트 상세정보가 삭제 되었습니다",
     }
   }), 200
