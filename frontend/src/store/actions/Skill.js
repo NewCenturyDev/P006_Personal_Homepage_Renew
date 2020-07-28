@@ -74,7 +74,7 @@ export default {
       throw '기술스택 이름을 입력해 주십시오';
     }
     if (skill.image === null) {
-      throw '기술스택 스크린샷을 1장 이상 첨부해 주십시오';
+      throw '기술스택 이미지를 첨부해 주십시오';
     }
     try {
       const response = await Vue.axios.post(`${backendURL}/createSkill`, skill);

@@ -14,7 +14,7 @@
               <el-card shadow="hover" body-style="{ width: calc(100% - 50px); padding: 0; }">
                 <div class="projectList">
                   <div class="projectImageContainer">
-                    <img class="projectImage" :src="`../assets/projects/${project.screenshot[0]}`" />
+                    <img class="projectImage" :src="project.screenshot[0]" />
                     <div class="projectBtnContainer">
                       <el-button class="projectBtn" type="plane" v-on:click="openGithub(project.link)">
                         Github 열기

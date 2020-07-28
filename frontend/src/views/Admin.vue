@@ -240,8 +240,8 @@
           <el-option
             v-for="(projectCategory, projectCategoryIndex) in $store.state.projectCategory"
             :key="projectCategoryIndex"
-            :label="projectCategory"
-            :value="projectCategory">
+            :label="projectCategory.category"
+            :value="projectCategory.category">
           </el-option>
         </el-select>
         <el-input class="projectName" placeholder="프로젝트명" v-model="newProject.name"></el-input>
@@ -494,6 +494,7 @@ export default {
     async createProject() {
       try {
         await this.$store.dispatch('createProject', this.newProject);
+        this.clearNewProjectInput();
       } catch (error) {
         alert(error);
       }
@@ -501,6 +502,7 @@ export default {
     async modifyProject() {
       try {
         await this.$store.dispatch('modifyProject', this.newProject);
+        this.clearNewProjectInput();
       } catch (error) {
         alert(error);
       }
@@ -513,7 +515,7 @@ export default {
       }
     },
     selectProjectImage() {
-      this.newProject.screenshot = this.$refs.projectScreenshot.files[0];
+      this.newProject.screenshot[0] = this.$refs.projectScreenshot.files[0];
     },
     clearNewProjectInput() {
       this.newProject = {

@@ -58,6 +58,17 @@ export default {
       throw error;
     }
   },
+  async getProjectList (context) {
+    try {
+      const response = await Vue.axios.get(`${backendURL}/getProjectList`);
+      if (response.data.status.success === false) {
+        throw response.data.status.message;
+      }
+      context.commit('loadProjectList', response.data.projectList);
+    } catch (error) {
+      throw error;
+    }
+  },
   async createProject (context, project) {
     if (project.name.length === 0) {
       throw '프로젝트 이름을 입력해 주십시오';
@@ -71,9 +82,6 @@ export default {
     if (project.discription.length === 0) {
       throw '프로젝트 개요를 입력해 주십시오';
     }
-    if (project.screenshot[0] === null) {
-      throw '프로젝트 스크린샷을 1장 이상 첨부해 주십시오';
-    }
     if (project.content.length === 0) {
       throw '프로젝트 상세설명을 입력해 주십시오';
     }
@@ -82,7 +90,16 @@ export default {
       if (response.data.status.success === false) {
         throw response.data.status.message;
       }
-      context.commit('createProject', response.data.project);  // projectObject
+      const formData = new FormData();
+      project.screenshot.forEach((imageFile) => {
+        formData.append('file', imageFile);
+      });
+      formData.append('projectID', response.data.projectID[0]);
+      const fileUploadResponse = await Vue.axios.post(`${backendURL}/uploadProjectScreenshotImage`, formData);
+      if (fileUploadResponse.data.status.success === false) {
+        throw fileUploadResponse.data.status.message;
+      }
+      context.commit('createProject', fileUploadResponse.data.project);  // projectObject
       alert('추가되었습니다.');
     } catch (error) {
       throw error;
@@ -101,9 +118,6 @@ export default {
     if (project.discription.length === 0) {
       throw '프로젝트 개요를 입력해 주십시오';
     }
-    if (project.screenshot[0] === null) {
-      throw '프로젝트 스크린샷을 1장 이상 첨부해 주십시오';
-    }
     if (project.content.length === 0) {
       throw '프로젝트 상세설명을 입력해 주십시오';
     }
@@ -112,7 +126,21 @@ export default {
       if (response.data.status.success === false) {
         throw response.data.status.message;
       }
-      context.commit('modifyProject', response.data.project);  // projectObject
+      if (typeof project.screenshot === 'object') {
+        const formData = new FormData();
+        project.screenshot.forEach((imageFile) => {
+          formData.append('file', imageFile);
+        });
+        formData.append('projectID', response.data.project.id);
+        const fileUploadResponse = await Vue.axios.post(`${backendURL}/uploadProjectScreenshotImage`, formData);
+        if (fileUploadResponse.data.status.success === false) {
+          throw fileUploadResponse.data.status.message;
+        }
+        context.commit('modifySkill', fileUploadResponse.data.project);  // projectObject
+      }
+      else {
+        context.commit('modifySkill', response.data.project);  // projectObject
+      }
       alert('변경되었습니다.');
     } catch (error) {
       throw error;
@@ -123,7 +151,7 @@ export default {
       if (typeof projectID !== 'number' || projectID < 1) {
         throw 'project 오브젝트의 ID가 잘못되었습니다';
       }
-      const response = await Vue.axios.post(`${backendURL}/deleteProject`, projectID);
+      const response = await Vue.axios.post(`${backendURL}/deleteProject`, { id: projectID });
       if (response.data.status.success === false) {
         throw response.data.status.message;
       }

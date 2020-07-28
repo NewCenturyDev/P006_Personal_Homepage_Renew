@@ -13,6 +13,7 @@ export default {
       await this.$store.dispatch('getSkillCategory');
       await this.$store.dispatch('getSkillList');
       await this.$store.dispatch('getProjectCategory');
+      await this.$store.dispatch('getProjectList');
     } catch (error) {
       alert(error);
     }

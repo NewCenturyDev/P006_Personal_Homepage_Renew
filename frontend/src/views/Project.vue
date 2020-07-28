@@ -8,7 +8,7 @@
           <el-carousel-item
             v-for="(screenshot, screenshotIndex) in project.screenshot"
             :key="screenshotIndex">
-              <img class="contentImage" :src="require(`../assets/projects/${screenshot}`)"/>
+              <img class="contentImage" :src="screenshot"/>
           </el-carousel-item>
         </el-carousel>
       </el-card>
