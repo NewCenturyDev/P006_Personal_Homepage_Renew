@@ -19,26 +19,18 @@ def login():
   password = request.json.get("password", None)
 
   try:
-    loginResult = authService.processLogin(username, password)
-  except Exception as error:
-    print(error)
-    return jsonify({
-        "status": {
-          "success": False,
-          "message": "데이터베이스에 오류가 발생했습니다",
-        }
-      }), 200
-  if (loginResult):
+    authService.processLogin(username, password)
     return jsonify({
       "status": {
-      "success": True,
-      "message": "로그인 되었습니다",
-    }}), 200
-  else:
+        "success": True,
+        "message": "로그인 되었습니다",
+      }
+    }), 200
+  except Exception as error:
     return jsonify({
       "status": {
         "success": False,
-        "message": "ID 또는 비밀번호를 다시 확인해 주십시오",
+        "message": error,
       }
     }), 200
 
@@ -47,7 +39,8 @@ def checkSession():
   if not request.is_json:
     return "Please request by JSON", 400
 
-  if authService.checkSession():
+  try:
+    authService.checkSession()
     return jsonify({
       "status": {
         "success": True,
@@ -55,11 +48,11 @@ def checkSession():
       },
       "auth": True,
     }), 200
-  else:
+  except Exception as error:
     return jsonify({
       "status": {
         "success": True,
-        "message": "로그인이 되어 있지 않습니다",
+        "message": error,
       },
       "auth": False,
     }), 200
