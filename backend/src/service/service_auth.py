@@ -4,23 +4,24 @@ from flask import session
 authDAO = AuthDAO()
 
 class AuthService():
-  def processLogin(username, password):
+  def processLogin(self, username, password):
     try:
       account = authDAO.getAccount(username, password)
+      self._activateSession(account)
     except Exception as error:
       raise error
-    result = self._activateSession(account)
-    return result
-  def checkSession():
-    return session["loggedIn"] == True
-  def processLogout():
+  def checkSession(self):
+    if (session["loggedIn"] == True):
+      return
+    else:
+      raise "로그인이 되어 있지 않습니다"
+  def processLogout(self):
     session.clear()
-  def _activateSession(account):
+  def _activateSession(self, account):
     if account:
       session["loggedIn"] = True
       session["id"] = account["id"]
       session["username"] = account["username"]
       session["permission"] = account["permission"]
-      return True
-    else
-      return False
+    else:
+      raise "로그인이 되어 있지 않습니다"
