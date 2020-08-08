@@ -19,4 +19,6 @@ app.register_blueprint(profileBluePrint)
 app.register_blueprint(projectBluePrint)
 app.register_blueprint(skillBluePrint)
 
+from . import cors
+
 from .routes import routes_index
