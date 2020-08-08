@@ -1,12 +1,16 @@
 from flask import Blueprint, render_template, request, redirect, jsonify, url_for
+import simplejson as json
 
 #import service
-from service.service_profile import ProfileService
+from ..service.service_profile import ProfileService
+
+#import DTO
+from ..dto.dto_exception import ExceptionDTO
 
 profileService = ProfileService()
-profile = Blueprint("profile", __name__, template_folder="templates")
+profileBluePrint = Blueprint("profile", __name__, template_folder="templates")
 
-@profile.route("/getProfile", methods=["GET"])
+@profileBluePrint.route("/getProfile", methods=["GET"])
 def getProfile():
   try:
     profile = profileService.getProfile()
@@ -22,13 +26,8 @@ def getProfile():
       }
     }), 200
   except Exception as error:
-    return jsonify({
-      "status": {
-        "success": False,
-        "message": error,
-      }
-    }), 200
-@profile.route("/setCodename", methods=["POST"])
+    return jsonify(ExceptionDTO(error).getDTO()), 200
+@profileBluePrint.route("/setCodename", methods=["POST"])
 def setCodename():
   if not request.is_json:
     return "Please request by JSON", 400
@@ -42,13 +41,8 @@ def setCodename():
       }
     }), 200
   except Exception as error:
-    return jsonify({
-      "status": {
-        "success": False,
-        "message": error,
-      }
-    }), 200
-@profile.route("/setPresentation", methods=["POST"])
+    return jsonify(ExceptionDTO(error).getDTO()), 200
+@profileBluePrint.route("/setPresentation", methods=["POST"])
 def setPresentation():
   if not request.is_json:
     return "Please request by JSON", 400
@@ -62,13 +56,8 @@ def setPresentation():
       }
     }), 200
   except Exception as error:
-    return jsonify({
-      "status": {
-        "success": False,
-        "message": error,
-      }
-    }), 200
-@profile.route("/setProfilePhoto", methods=["POST"])
+    return jsonify(ExceptionDTO(error).getDTO()), 200
+@profileBluePrint.route("/setProfilePhoto", methods=["POST"])
 def setProfilePhoto():
   if "file" not in request.files:
     return jsonify({
@@ -87,9 +76,4 @@ def setProfilePhoto():
       "url": fileURL
     }), 200
   except Exception as error:
-    return jsonify({
-      "status": {
-        "success": False,
-        "message": error,
-      }
-    }), 200
+    return jsonify(ExceptionDTO(error).getDTO()), 200

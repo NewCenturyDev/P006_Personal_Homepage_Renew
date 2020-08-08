@@ -1,44 +1,44 @@
-from config import db
+from ..db import db, DICT_CURSOR
 
 class ProfileDAO():
-  def getProfile():
+  def getProfile(self):
+    dictCursor = db.cursor(DICT_CURSOR)
     try:
-      cursor = db.cursor(pymysql.cursors.DictCursor)
-      cursor.execute("SELECT * FROM profile WHERE id = 1")
-      profile = cursor.fetchone()
+      dictCursor.execute("SELECT * FROM profile WHERE id = 1")
+      profile = dictCursor.fetchone()
       return profile
     except Exception as error:
       print(error)
-      raise "데이터베이스에 오류가 발생했습니다"
+      raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
-      cursor.close()
-  def updateCodename(codename):
+      dictCursor.close()
+  def updateCodename(self, codename):
+    cursor = db.cursor()
     try:
-      cursor = db.cursor()
       cursor.execute("UPDATE profile SET codename = %s WHERE id = 1", (codename))
       db.commit()
     except Exception as error:
       print(error)
-      raise "데이터베이스에 오류가 발생했습니다"
+      raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
       cursor.close()
-  def updatePresentation(presentation):
+  def updatePresentation(self, presentation):
+    cursor = db.cursor()
     try:
-      cursor = db.cursor()
       cursor.execute("UPDATE profile SET presentation = %s WHERE id = 1", (presentation))
       db.commit()
     except Exception as error:
       print(error)
-      raise "데이터베이스에 오류가 발생했습니다"
+      raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
       cursor.close()
-  def updateProfilePhoto(fileURL):
+  def updateProfilePhoto(self, fileURL):
+    cursor = db.cursor()
     try:
-      cursor = db.cursor()
       cursor.execute("UPDATE profile SET photo = %s WHERE id = 1", (fileURL))
       db.commit()
     except Exception as error:
       print(error)
-      raise "데이터베이스에 오류가 발생했습니다"
+      raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
       cursor.close()

@@ -1,4 +1,4 @@
-from dao.dao_activity import ActivityDAO
+from ..dao.dao_activity import ActivityDAO
 
 activityDAO = ActivityDAO()
 class ActivityService():

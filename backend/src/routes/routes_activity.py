@@ -1,16 +1,17 @@
 from flask import Blueprint, render_template, request, redirect, jsonify, url_for
+import simplejson as json
 
 #import service
-from service.service_activity import ActivityService
+from ..service.service_activity import ActivityService
+
+#import DTO
+from ..dto.dto_exception import ExceptionDTO
 
 activityService = ActivityService()
-activity = Blueprint("activity", __name__, template_folder="templates")
+activityBluePrint = Blueprint("activity", __name__, template_folder="templates")
 
-@activity.route("/getActivity", methods=["GET"])
+@activityBluePrint.route("/getActivity", methods=["GET"])
 def getActivity():
-  if not request.is_json:
-    return "Please request by JSON", 400
-
   try:
     activityList = activityService.getActivity()
     return jsonify({
@@ -21,14 +22,9 @@ def getActivity():
       "activityList": activityList
     }), 200
   except Exception as error:
-    return jsonify({
-      "status": {
-        "success": False,
-        "message": error,
-      }
-    }), 200
+    return jsonify(ExceptionDTO(error).getDTO()), 200
 
-@activity.route("/createActivity", methods=["POST"])
+@activityBluePrint.route("/createActivity", methods=["POST"])
 def createActivity():
   if not request.is_json:
     return "Please request by JSON", 400
@@ -48,37 +44,31 @@ def createActivity():
       }
     }), 200
   except Exception as error:
-    return jsonify({
-      "status": {
-        "success": False,
-        "message": error,
-      }
-    }), 200
+    return jsonify(ExceptionDTO(error).getDTO()), 200
 
-@activity.route("/modifyActivity", methods=["POST"])
+@activityBluePrint.route("/modifyActivity", methods=["POST"])
 def modifyActivity():
   if not request.is_json:
     return "Please request by JSON", 400
 
   activity = request.json
   try:
-    activity = activityService.modifyActivity(activity)
+    activity = activityService.modifyActivity(request.json)
     return jsonify({
       "status": {
         "success": True,
         "message": "활동이력이 수정 되었습니다",
       },
-      "activity": activity
-    }), 200
-  except Exception as error:
-    return jsonify({
-      "status": {
-        "success": False,
-        "message": error,
+      "activity": {
+        "id": activity[0],
+        "content": activity[1],
+        "timestamp": activity[2]
       }
     }), 200
+  except Exception as error:
+    return jsonify(ExceptionDTO(error).getDTO()), 200
 
-@activity.route("/deleteActivity", methods=["POST"])
+@activityBluePrint.route("/deleteActivity", methods=["POST"])
 def deleteActivity():
   if not request.is_json:
     return "Please request by JSON", 400
@@ -93,9 +83,4 @@ def deleteActivity():
       }
     }), 200
   except Exception as error:
-    return jsonify({
-      "status": {
-        "success": False,
-        "message": error,
-      }
-    }), 200
+    return jsonify(ExceptionDTO(error).getDTO()), 200

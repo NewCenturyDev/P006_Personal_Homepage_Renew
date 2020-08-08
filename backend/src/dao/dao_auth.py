@@ -1,11 +1,13 @@
+from ..db import db, DICT_CURSOR
+
 class AuthDAO():
-  def getAccount(username, password):
+  def getAccount(self, username, password):
+    dictCursor = db.cursor(DICT_CURSOR)
     try:
-      cursor = db.cursor(pymysql.cursors.DictCursor)
-      cursor.execute("SELECT * FROM account WHERE username = %s AND password = %s", (username, password))
-      account = cursor.fetchone()
+      dictCursor.execute("SELECT * FROM account WHERE username = %s AND password = %s", (username, password))
+      account = dictCursor.fetchone()
       return account
     except Exception as error:
       raise error
     finally:
-      cursor.close()
+      dictCursor.close()
