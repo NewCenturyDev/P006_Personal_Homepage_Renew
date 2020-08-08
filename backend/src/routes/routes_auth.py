@@ -1,16 +1,16 @@
 from flask import Blueprint, render_template, request, redirect, jsonify, url_for
+import simplejson as json
 
 #import service
-from service.service_auth import AuthService
+from ..service.service_auth import AuthService
+
+#import DTO
+from ..dto.dto_exception import ExceptionDTO
 
 authService = AuthService()
-auth = Blueprint('auth', __name__, template_folder='templates')
+authBluePrint = Blueprint('auth', __name__, template_folder='templates')
 
-@auth.route("/")
-def home():
-  return render_template("index.html")
-
-@auth.route("/login", methods=["POST"])
+@authBluePrint.route("/login", methods=["POST"])
 def login():
   if not request.is_json:
     return "Please request by JSON", 400
@@ -27,14 +27,9 @@ def login():
       }
     }), 200
   except Exception as error:
-    return jsonify({
-      "status": {
-        "success": False,
-        "message": error,
-      }
-    }), 200
+    return jsonify(ExceptionDTO(error).getDTO()), 200
 
-@auth.route("/checkSession", methods=["POST"])
+@authBluePrint.route("/checkSession", methods=["POST"])
 def checkSession():
   if not request.is_json:
     return "Please request by JSON", 400
@@ -52,12 +47,12 @@ def checkSession():
     return jsonify({
       "status": {
         "success": True,
-        "message": error,
+        "message": str(error),
       },
       "auth": False,
     }), 200
 
-@auth.route("/logout", methods=["POST"])
+@authBluePrint.route("/logout", methods=["POST"])
 def logout():
   if not request.is_json:
     return "Please request by JSON", 400
