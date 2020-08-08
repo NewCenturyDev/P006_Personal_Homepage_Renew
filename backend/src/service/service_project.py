@@ -26,6 +26,7 @@ class ProjectService(CrudService):
   def uploadProjectImageList(self, fileField, projectID):
     try:
       self.fileService.checkFileIsNull(fileField)
+      print(fileField.getlist("file"))
       fileURLList = self.fileService.uploadMultipleFiles(fileField.getlist("file"), "image", "project", projectID, "project_screenshot_")
       return self.dao.updateFileURLList(fileURLList, projectID)
     except Exception as error:
