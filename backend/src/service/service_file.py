@@ -42,10 +42,10 @@ class FileService():
       os.remove(os.path.join(current_app.root_path, "view", "data", fileCategory, targetFile))
   def deletePreviousDir(self, fileCategory, entityID):
     # Delete previous image file
-    previousFileList = glob.glob(os.path.join(current_app.root_path, "view", "data", fileCategory, entityID, "*.*"))
+    previousFileList = glob.glob(os.path.join(current_app.root_path, "view", "data", fileCategory, str(entityID), "*.*"))
     for targetFile in previousFileList:
-      if os.path.exists(os.path.join(current_app.root_path, "view", "data", fileCategory, entityID, targetFile)):
-        os.remove(os.path.join(current_app.root_path, "view", "data", fileCategory, entityID, targetFile))
+      if os.path.exists(os.path.join(current_app.root_path, "view", "data", fileCategory, str(entityID), targetFile)):
+        os.remove(os.path.join(current_app.root_path, "view", "data", fileCategory, str(entityID), targetFile))
   def checkFileIsNull(self, requestFiles):
     if "file" not in requestFiles:
       raise Exception("폼데이터에 파일이 없습니다")

@@ -219,7 +219,7 @@
         </el-table-column>
         <el-table-column width="160" label="Operation">
           <template slot-scope="projectScope">
-            <el-button class="showBtn" size="mini">내용 보기</el-button>
+            <el-button class="showBtn" size="mini" v-on:click="gotoProjectDetail(projectScope.$index)">내용 보기</el-button>
             <el-button class="editBtn" size="mini" type="primary" v-on:click="selectProject(projectScope.$index)">수정</el-button>
             <el-popconfirm
               title="정말 프로젝트를 삭제하시겠습니까?"
@@ -515,7 +515,7 @@ export default {
       }
     },
     selectProjectImage() {
-      this.newProject.screenshot[0] = this.$refs.projectScreenshot.files[0];
+      this.newProject.screenshot = this.$refs.projectScreenshot.files;
     },
     clearNewProjectInput() {
       this.newProject = {
@@ -530,6 +530,12 @@ export default {
       };
       this.$refs.projectScreenshot.value = null;
       this.projectFormOpen = false;
+    },
+    gotoProjectDetail(projectIndex) {
+      this.$router.push({
+        name: 'Project',
+        query: { id: this.$store.state.projects[projectIndex].id },
+      });
     },
   }
 }

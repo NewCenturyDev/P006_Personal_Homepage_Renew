@@ -126,7 +126,7 @@ export default {
       if (response.data.status.success === false) {
         throw response.data.status.message;
       }
-      if (typeof project.screenshot === 'object') {
+      if (typeof project.screenshot[0] !== typeof String()) {
         const formData = new FormData();
         project.screenshot.forEach((imageFile) => {
           formData.append('file', imageFile);
@@ -136,10 +136,10 @@ export default {
         if (fileUploadResponse.data.status.success === false) {
           throw fileUploadResponse.data.status.message;
         }
-        context.commit('modifySkill', fileUploadResponse.data.project);  // projectObject
+        context.commit('modifyProject', fileUploadResponse.data.project);  // projectObject
       }
       else {
-        context.commit('modifySkill', response.data.project);  // projectObject
+        context.commit('modifyProject', response.data.project);  // projectObject
       }
       alert('변경되었습니다.');
     } catch (error) {
