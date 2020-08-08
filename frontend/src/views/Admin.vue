@@ -319,6 +319,12 @@ export default {
       alert(error);
     }
   },
+  mounted() {
+    this.newPresentation = this.newPresentation.replace(/<br\/>/g, '\n');
+  },
+  updated() {
+    this.newPresentation = this.newPresentation.replace(/<br\/>/g, '\n');
+  },
   methods: {
     goHome() {
       this.$router.push('/');
@@ -336,6 +342,7 @@ export default {
     },
     async setPresentation() {
       try {
+        this.newPresentation = this.newPresentation.replace(/\r\n|\r|\n/g, '<br/>');
         await this.$store.dispatch('setPresentation', this.newPresentation);
       } catch (error) {
         alert(error);
@@ -489,10 +496,12 @@ export default {
     },
     selectProject(projectIndex) {
       this.newProject = this.$store.state.projects[projectIndex];
+      this.newProject.discription = this.newProject.discription.replace(/<br\/>/g, '\n');
       this.projectFormOpen = true;
     },
     async createProject() {
       try {
+        this.newProject.discription = this.newProject.discription.replace(/\r\n|\r|\n/g, '<br/>');
         await this.$store.dispatch('createProject', this.newProject);
         this.clearNewProjectInput();
       } catch (error) {
@@ -501,6 +510,7 @@ export default {
     },
     async modifyProject() {
       try {
+        this.newProject.discription = this.newProject.discription.replace(/\r\n|\r|\n/g, '<br/>');
         await this.$store.dispatch('modifyProject', this.newProject);
         this.clearNewProjectInput();
       } catch (error) {
