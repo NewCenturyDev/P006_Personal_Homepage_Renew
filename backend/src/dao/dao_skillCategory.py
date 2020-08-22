@@ -17,9 +17,9 @@ class SkillCategoryDAO():
   def insert(self, skillCategory):
     cursor = db.cursor()
     try:
-      cursor.execute("INSERT INTO skillCategory (category) VALUE (%s)", (skillCategory["category"]))
+      cursor.execute("INSERT INTO skillcategory (category) VALUE (%s)", (skillCategory["category"]))
       db.commit()
-      cursor.execute("SELECT * FROM skillCategory WHERE category = %s", (skillCategory["category"]))
+      cursor.execute("SELECT * FROM skillcategory WHERE category = %s", (skillCategory["category"]))
       skillCategory = cursor.fetchone()
       return skillCategory
     except Exception as error:
@@ -30,9 +30,9 @@ class SkillCategoryDAO():
   def update(self, skillCategory):
     cursor = db.cursor()
     try:
-      cursor.execute("UPDATE skillCategory SET category = %s WHERE id = %s", (skillCategory["category"], skillCategory["id"]))
+      cursor.execute("UPDATE skillcategory SET category = %s WHERE id = %s", (skillCategory["category"], skillCategory["id"]))
       db.commit()
-      cursor.execute("SELECT * FROM skillCategory WHERE category = %s", (skillCategory["category"]))
+      cursor.execute("SELECT * FROM skillcategory WHERE category = %s", (skillCategory["category"]))
       skillCategory = cursor.fetchone()
       return skillCategory
     except Exception as error:
@@ -43,7 +43,7 @@ class SkillCategoryDAO():
   def delete(self, skillCategoryID):
     cursor = db.cursor()
     try:
-      cursor.execute("DELETE FROM skillCategory WHERE id = %s", (skillCategoryID))
+      cursor.execute("DELETE FROM skillcategory WHERE id = %s", (skillCategoryID))
       db.commit()
     except Exception as error:
       print(error)

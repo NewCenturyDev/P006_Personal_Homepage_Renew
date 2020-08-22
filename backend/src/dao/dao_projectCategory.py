@@ -17,9 +17,9 @@ class ProjectCategoryDAO():
   def insert(self, projectCategory):
     cursor = db.cursor()
     try:
-      cursor.execute("INSERT INTO projectCategory (category) VALUE (%s)", (projectCategory["category"]))
+      cursor.execute("INSERT INTO projectcategory (category) VALUE (%s)", (projectCategory["category"]))
       db.commit()
-      cursor.execute("SELECT * FROM projectCategory WHERE category = %s", (projectCategory["category"]))
+      cursor.execute("SELECT * FROM projectcategory WHERE category = %s", (projectCategory["category"]))
       projectCategory = cursor.fetchone()
       return projectCategory
     except Exception as error:
@@ -30,9 +30,9 @@ class ProjectCategoryDAO():
   def update(self, projectCategory):
     cursor = db.cursor()
     try:
-      cursor.execute("UPDATE projectCategory SET category = %s WHERE id = %s", (projectCategory["category"], projectCategory["id"]))
+      cursor.execute("UPDATE projectcategory SET category = %s WHERE id = %s", (projectCategory["category"], projectCategory["id"]))
       db.commit()
-      cursor.execute("SELECT * FROM projectCategory WHERE category = %s", (projectCategory["category"]))
+      cursor.execute("SELECT * FROM projectcategory WHERE category = %s", (projectCategory["category"]))
       projectCategory = cursor.fetchone()
       return projectCategory
     except Exception as error:
@@ -43,7 +43,7 @@ class ProjectCategoryDAO():
   def delete(self, projectCategoryID):
     cursor = db.cursor()
     try:
-      cursor.execute("DELETE FROM projectCategory WHERE id = %s", (projectCategoryID))
+      cursor.execute("DELETE FROM projectcategory WHERE id = %s", (projectCategoryID))
       db.commit()
     except Exception as error:
       print(error)
