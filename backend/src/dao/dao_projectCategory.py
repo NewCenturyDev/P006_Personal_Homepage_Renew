@@ -1,8 +1,9 @@
 import simplejson as json
-from ..db import db, DICT_CURSOR
+from ..db import get_DB_connection, DICT_CURSOR
 
 class ProjectCategoryDAO():
   def select(self):
+    db = get_DB_connection()
     dictCursor = db.cursor(DICT_CURSOR)
     try:
       dictCursor.execute("SELECT * FROM projectcategory ORDER BY id")
@@ -14,7 +15,9 @@ class ProjectCategoryDAO():
       raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
       dictCursor.close()
+      db.close()
   def insert(self, projectCategory):
+    db = get_DB_connection()
     cursor = db.cursor()
     try:
       cursor.execute("INSERT INTO projectcategory (category) VALUE (%s)", (projectCategory["category"]))
@@ -27,7 +30,9 @@ class ProjectCategoryDAO():
       raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
       cursor.close()
+      db.close()
   def update(self, projectCategory):
+    db = get_DB_connection()
     cursor = db.cursor()
     try:
       cursor.execute("UPDATE projectcategory SET category = %s WHERE id = %s", (projectCategory["category"], projectCategory["id"]))
@@ -40,7 +45,9 @@ class ProjectCategoryDAO():
       raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
       cursor.close()
+      db.close()
   def delete(self, projectCategoryID):
+    db = get_DB_connection()
     cursor = db.cursor()
     try:
       cursor.execute("DELETE FROM projectcategory WHERE id = %s", (projectCategoryID))
@@ -50,3 +57,4 @@ class ProjectCategoryDAO():
       raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
       cursor.close()
+      db.close()

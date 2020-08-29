@@ -33,6 +33,11 @@ export default {
       project: this.$store.state.projects.find((project) => (project.id === Number(this.$route.query.id))),
     };
   },
+  beforeMount() {
+    if (this.project === undefined) {
+      this.goHome();
+    }
+  },
   methods: {
     goHome() {
       this.$router.push('/');
@@ -76,6 +81,7 @@ export default {
       }
       .contentText {
         padding: 0;
+        text-align: left;
       }
     }
   }

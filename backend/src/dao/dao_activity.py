@@ -1,8 +1,9 @@
 import simplejson as json
-from ..db import db, DICT_CURSOR
+from ..db import get_DB_connection, DICT_CURSOR
 
 class ActivityDAO():
   def getActivity(self):
+    db = get_DB_connection()
     dictCursor = db.cursor(DICT_CURSOR)
     try:
       dictCursor.execute("SELECT * FROM activity")
@@ -14,7 +15,9 @@ class ActivityDAO():
       raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
       dictCursor.close()
+      db.close()
   def insertActivity(self, activity):
+    db = get_DB_connection()
     cursor = db.cursor()
     try:
       cursor.execute("INSERT INTO activity (content, timestamp) VALUE (%s, %s)", (activity["content"], activity["timestamp"]))
@@ -27,7 +30,9 @@ class ActivityDAO():
       raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
       cursor.close()
+      db.close()
   def updateActivity(self, activity):
+    db = get_DB_connection()
     cursor = db.cursor()
     try:
       cursor.execute("UPDATE activity SET content = %s, timestamp = %s WHERE id = %s", (activity["content"], activity["timestamp"], activity["id"]))
@@ -40,7 +45,9 @@ class ActivityDAO():
       raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
       cursor.close()
+      db.close()
   def deleteActivity(self, activityID):
+    db = get_DB_connection()
     cursor = db.cursor()
     try:
       cursor.execute("DELETE FROM activity WHERE id = %s", (activityID))
@@ -50,3 +57,4 @@ class ActivityDAO():
       raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
       cursor.close()
+      db.close()

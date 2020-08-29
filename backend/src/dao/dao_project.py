@@ -1,8 +1,9 @@
 import simplejson as json
-from ..db import db, DICT_CURSOR
+from ..db import get_DB_connection, DICT_CURSOR
 
 class ProjectDAO():
   def select(self):
+    db = get_DB_connection()
     dictCursor = db.cursor(DICT_CURSOR)
     try:
       dictCursor.execute("SELECT * FROM project ORDER BY id")
@@ -14,7 +15,9 @@ class ProjectDAO():
       raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
       dictCursor.close()
+      db.close()
   def insert(self, project):
+    db = get_DB_connection()
     cursor = db.cursor()
     print(project["stackTags"])
     try:
@@ -28,7 +31,9 @@ class ProjectDAO():
       raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
       cursor.close()
+      db.close()
   def update(self, project):
+    db = get_DB_connection()
     cursor = db.cursor()
     try:
       cursor.execute("UPDATE project SET name = %s, category = %s, link = %s, discription = %s, content = %s, tags = %s WHERE id = %s", (project["name"], project["category"], project["link"], project["discription"], project["content"], project["stackTags"], project["id"]))
@@ -41,7 +46,9 @@ class ProjectDAO():
       raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
       cursor.close()
+      db.close()
   def delete(self, projectID):
+    db = get_DB_connection()
     cursor = db.cursor()
     try:
       cursor.execute("DELETE FROM project WHERE id = %s", (projectID))
@@ -51,7 +58,9 @@ class ProjectDAO():
       raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
       cursor.close()
+      db.close()
   def updateFileURLList(self, FileURLList, projectID):
+    db = get_DB_connection()
     cursor = db.cursor()
     try:
       cursor.execute("UPDATE project SET screenshot = %s WHERE id = %s", (json.dumps(FileURLList), projectID))
@@ -64,3 +73,4 @@ class ProjectDAO():
       raise Exception("데이터베이스에 오류가 발생했습니다")
     finally:
       cursor.close()
+      db.close()
