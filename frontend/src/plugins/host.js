@@ -1,2 +1,2 @@
-const backendURL = 'http://52.141.56.180:80';
+const backendURL = 'http://localhost:80';
 export default backendURL;
