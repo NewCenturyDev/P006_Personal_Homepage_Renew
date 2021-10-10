@@ -1,7 +1,7 @@
 # DB
 import pymysql
 config = {
-  'host': "localhost",
+  'host': "hypertech99s_page_database",
   'port': 3306,
   'user': "page",
   'passwd': "page",
